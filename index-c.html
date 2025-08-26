@@ -26,8 +26,8 @@
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 1000px;
-            min-height: 700px;
+            max-width: 1200px;
+            min-height: 800px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -78,6 +78,7 @@
         .btn-success { background: #28a745; }
         .btn-warning { background: #ffc107; color: #333; }
         .btn-danger { background: #dc3545; }
+        .btn-info { background: #17a2b8; }
 
         .status {
             padding: 10px;
@@ -90,7 +91,7 @@
         .status.connecting { background: #fff3cd; color: #856404; }
         .status.connected { background: #d4edda; color: #155724; }
 
-        .connection-alert {
+        .user-alert {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -104,7 +105,7 @@
             transition: transform 0.3s ease;
         }
 
-        .connection-alert.show {
+        .user-alert.show {
             transform: translateX(0);
         }
 
@@ -145,18 +146,58 @@
             margin: 10px 0;
         }
 
-        .editor-container {
+        .workspace {
             flex: 1;
             display: flex;
             flex-direction: column;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #007bff;
+            background: white;
+            border-bottom-color: #007bff;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            flex: 1;
+            display: none;
+            flex-direction: column;
             padding: 20px;
+        }
+
+        .tab-content.active {
+            display: flex;
         }
 
         .editor-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .participants {
@@ -175,6 +216,12 @@
             font-size: 12px;
         }
 
+        .document-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -186,7 +233,7 @@
             border-radius: 8px 8px 0 0;
         }
 
-        .toolbar button {
+        .toolbar button, .toolbar select {
             padding: 6px 12px;
             border: 1px solid #ddd;
             background: white;
@@ -206,13 +253,6 @@
             border-color: #007bff;
         }
 
-        .toolbar select {
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-        }
-
         .document-editor {
             flex: 1;
             border: 1px solid #ddd;
@@ -222,7 +262,7 @@
             font-size: 14px;
             line-height: 1.6;
             outline: none;
-            min-height: 300px;
+            min-height: 400px;
             overflow-y: auto;
             background: white;
         }
@@ -230,6 +270,101 @@
         .document-editor:focus {
             border-color: #007bff;
             box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+
+        .whiteboard-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .whiteboard-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            align-items: center;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            padding: 5px;
+            border-right: 1px solid #ddd;
+            margin-right: 5px;
+        }
+
+        .tool-group:last-child {
+            border-right: none;
+        }
+
+        .tool-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .tool-btn.active {
+            border-color: #007bff;
+            background: #e3f2fd;
+            color: #007bff;
+        }
+
+        .tool-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .brush-size-slider, .opacity-slider {
+            width: 100px;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+        }
+
+        .color-swatch {
+            width: 25px;
+            height: 25px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .color-swatch.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+        .custom-color {
+            width: 25px;
+            height: 25px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .whiteboard-canvas {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            background: white;
+            cursor: crosshair;
         }
 
         .hidden {
@@ -272,8 +407,13 @@
                 flex-direction: column;
             }
 
-            .toolbar {
+            .toolbar, .whiteboard-toolbar {
                 justify-content: space-between;
+            }
+
+            .tabs {
+                flex-direction: row;
+                overflow-x: auto;
             }
         }
     </style>
@@ -281,8 +421,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤝 Collaborative Document Editor</h1>
-            <p>Connect and collaborate in real-time using WebRTC</p>
+            <h1>🤝 Collaborative Workspace</h1>
+            <p>Create, edit, and draw together in real-time using WebRTC</p>
         </div>
 
         <div class="connection-panel">
@@ -324,66 +464,137 @@
             </div>
         </div>
 
-        <div class="editor-container">
-            <div class="editor-header">
-                <h3>📝 Rich Text Document</h3>
-                <div class="participants" id="participants">
-                    <span>👥 Participants:</span>
-                    <span class="participants-count" id="participantCount">1</span>
-                    <span id="participantsList">You</span>
+        <div class="workspace">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('document')">📝 Document Editor</button>
+                <button class="tab" onclick="switchTab('whiteboard')">🎨 Whiteboard</button>
+            </div>
+
+            <!-- Document Editor Tab -->
+            <div class="tab-content active" id="documentTab">
+                <div class="editor-header">
+                    <div class="participants" id="participants">
+                        <span>👥 Participants:</span>
+                        <span class="participants-count" id="participantCount">1</span>
+                        <span id="participantsList">You</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="btn btn-info" onclick="downloadDocument()">💾 Download</button>
+                        <button class="btn btn-info" onclick="loadDocument()">📂 Load Document</button>
+                        <input type="file" id="documentFile" accept=".html,.txt" style="display:none;" onchange="handleDocumentLoad()">
+                    </div>
+                </div>
+
+                <!-- Rich Text Toolbar -->
+                <div class="toolbar">
+                    <button onclick="formatDoc('bold')" title="Bold"><b>B</b></button>
+                    <button onclick="formatDoc('italic')" title="Italic"><i>I</i></button>
+                    <button onclick="formatDoc('underline')" title="Underline"><u>U</u></button>
+                    <button onclick="formatDoc('strikeThrough')" title="Strike"><s>S</s></button>
+                    
+                    <select onchange="formatDoc('fontSize', this.value)" title="Font Size">
+                        <option value="1">8pt</option>
+                        <option value="2">10pt</option>
+                        <option value="3" selected>12pt</option>
+                        <option value="4">14pt</option>
+                        <option value="5">18pt</option>
+                        <option value="6">24pt</option>
+                        <option value="7">36pt</option>
+                    </select>
+
+                    <select onchange="formatDoc('fontName', this.value)" title="Font Family">
+                        <option value="Arial">Arial</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Times New Roman">Times</option>
+                        <option value="Courier New">Courier</option>
+                        <option value="Verdana" selected>Verdana</option>
+                    </select>
+
+                    <input type="color" class="color-picker" onchange="formatDoc('foreColor', this.value)" title="Text Color" value="#000000">
+                    <input type="color" class="color-picker" onchange="formatDoc('backColor', this.value)" title="Background Color" value="#ffffff">
+
+                    <button onclick="formatDoc('justifyLeft')" title="Align Left">⬅️</button>
+                    <button onclick="formatDoc('justifyCenter')" title="Center">↔️</button>
+                    <button onclick="formatDoc('justifyRight')" title="Align Right">➡️</button>
+
+                    <button onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
+                    <button onclick="formatDoc('insertOrderedList')" title="Number List">1. List</button>
+                    
+                    <button onclick="formatDoc('outdent')" title="Outdent">⬅️ Tab</button>
+                    <button onclick="formatDoc('indent')" title="Indent">Tab ➡️</button>
+
+                    <button onclick="formatDoc('undo')" title="Undo">↶ Undo</button>
+                    <button onclick="formatDoc('redo')" title="Redo">↷ Redo</button>
+                </div>
+
+                <div class="document-editor" id="documentEditor" contenteditable="true" 
+                     placeholder="Start typing to create your document..."></div>
+            </div>
+
+            <!-- Whiteboard Tab -->
+            <div class="tab-content" id="whiteboardTab">
+                <div class="editor-header">
+                    <div class="participants">
+                        <span>👥 Drawing together:</span>
+                        <span class="participants-count" id="whiteboardParticipantCount">1</span>
+                        <span id="whiteboardParticipantsList">You</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="btn btn-info" onclick="downloadWhiteboard()">💾 Save Canvas</button>
+                        <button class="btn btn-info" onclick="loadWhiteboard()">📂 Load Image</button>
+                        <input type="file" id="whiteboardFile" accept="image/*" style="display:none;" onchange="handleWhiteboardLoad()">
+                    </div>
+                </div>
+
+                <div class="whiteboard-container">
+                    <!-- Whiteboard Toolbar -->
+                    <div class="whiteboard-toolbar">
+                        <div class="tool-group">
+                            <button class="tool-btn active" data-tool="pen" onclick="selectTool('pen')" title="Pen">✏️</button>
+                            <button class="tool-btn" data-tool="brush" onclick="selectTool('brush')" title="Brush">🖌️</button>
+                            <button class="tool-btn" data-tool="eraser" onclick="selectTool('eraser')" title="Eraser">🧹</button>
+                            <button class="tool-btn" data-tool="line" onclick="selectTool('line')" title="Line">📏</button>
+                            <button class="tool-btn" data-tool="rectangle" onclick="selectTool('rectangle')" title="Rectangle">⬜</button>
+                            <button class="tool-btn" data-tool="circle" onclick="selectTool('circle')" title="Circle">⭕</button>
+                        </div>
+
+                        <div class="tool-group">
+                            <label for="brushSize">Size:</label>
+                            <input type="range" id="brushSize" class="brush-size-slider" min="1" max="50" value="5" onchange="setBrushSize(this.value)">
+                            <span id="brushSizeValue">5</span>
+                        </div>
+
+                        <div class="tool-group">
+                            <label for="opacity">Opacity:</label>
+                            <input type="range" id="opacity" class="opacity-slider" min="0.1" max="1" step="0.1" value="1" onchange="setOpacity(this.value)">
+                            <span id="opacityValue">100%</span>
+                        </div>
+
+                        <div class="tool-group">
+                            <div class="color-palette">
+                                <div class="color-swatch active" style="background: #000000" onclick="selectColor('#000000')"></div>
+                                <div class="color-swatch" style="background: #FF0000" onclick="selectColor('#FF0000')"></div>
+                                <div class="color-swatch" style="background: #00FF00" onclick="selectColor('#00FF00')"></div>
+                                <div class="color-swatch" style="background: #0000FF" onclick="selectColor('#0000FF')"></div>
+                                <div class="color-swatch" style="background: #FFFF00" onclick="selectColor('#FFFF00')"></div>
+                                <div class="color-swatch" style="background: #FF00FF" onclick="selectColor('#FF00FF')"></div>
+                                <div class="color-swatch" style="background: #00FFFF" onclick="selectColor('#00FFFF')"></div>
+                                <div class="color-swatch" style="background: #FFFFFF; border-color: #333;" onclick="selectColor('#FFFFFF')"></div>
+                            </div>
+                            <input type="color" class="custom-color" id="customColor" value="#000000" onchange="selectColor(this.value)" title="Custom Color">
+                        </div>
+
+                        <div class="tool-group">
+                            <button class="btn" onclick="clearCanvas()" title="Clear Canvas">🗑️ Clear</button>
+                            <button class="btn" onclick="undoCanvas()" title="Undo">↶ Undo</button>
+                        </div>
+                    </div>
+
+                    <canvas class="whiteboard-canvas" id="whiteboardCanvas" width="800" height="600"></canvas>
                 </div>
             </div>
-
-            <!-- Rich Text Toolbar -->
-            <div class="toolbar">
-                <button onclick="formatDoc('bold')" title="Bold"><b>B</b></button>
-                <button onclick="formatDoc('italic')" title="Italic"><i>I</i></button>
-                <button onclick="formatDoc('underline')" title="Underline"><u>U</u></button>
-                <button onclick="formatDoc('strikeThrough')" title="Strike"><s>S</s></button>
-                
-                <select onchange="formatDoc('fontSize', this.value)" title="Font Size">
-                    <option value="1">8pt</option>
-                    <option value="2">10pt</option>
-                    <option value="3" selected>12pt</option>
-                    <option value="4">14pt</option>
-                    <option value="5">18pt</option>
-                    <option value="6">24pt</option>
-                    <option value="7">36pt</option>
-                </select>
-
-                <select onchange="formatDoc('fontName', this.value)" title="Font Family">
-                    <option value="Arial">Arial</option>
-                    <option value="Helvetica">Helvetica</option>
-                    <option value="Times New Roman">Times</option>
-                    <option value="Courier New">Courier</option>
-                    <option value="Verdana" selected>Verdana</option>
-                </select>
-
-                <input type="color" class="color-picker" onchange="formatDoc('foreColor', this.value)" title="Text Color" value="#000000">
-                <input type="color" class="color-picker" onchange="formatDoc('backColor', this.value)" title="Background Color" value="#ffffff">
-
-                <button onclick="formatDoc('justifyLeft')" title="Align Left">⬅️</button>
-                <button onclick="formatDoc('justifyCenter')" title="Center">↔️</button>
-                <button onclick="formatDoc('justifyRight')" title="Align Right">➡️</button>
-
-                <button onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
-                <button onclick="formatDoc('insertOrderedList')" title="Number List">1. List</button>
-                
-                <button onclick="formatDoc('outdent')" title="Outdent">⬅️ Tab</button>
-                <button onclick="formatDoc('indent')" title="Indent">Tab ➡️</button>
-
-                <button onclick="formatDoc('undo')" title="Undo">↶ Undo</button>
-                <button onclick="formatDoc('redo')" title="Redo">↷ Redo</button>
-            </div>
-
-            <div class="document-editor" id="documentEditor" contenteditable="true" 
-                 placeholder="Start typing to create your document..."></div>
         </div>
-    </div>
-
-    <!-- Connection Alert -->
-    <div class="connection-alert" id="connectionAlert">
-        🎉 Connection Established! You can now collaborate in real-time.
     </div>
 
     <!-- Peer Info -->
@@ -402,6 +613,7 @@
                 this.participants = new Set([this.peerName]);
                 
                 this.setupEditor();
+                this.setupWhiteboard();
                 this.setupICEServers();
                 this.setupBeforeUnload();
             }
@@ -420,11 +632,17 @@
 
             setupBeforeUnload() {
                 window.addEventListener('beforeunload', (e) => {
-                    if (this.connections.size > 0) {
+                    const activeConnections = Array.from(this.connections.keys()).filter(key => key !== 'pending');
+                    if (activeConnections.length > 0) {
+                        const message = `You have ${activeConnections.length} active collaboration connection(s). If you leave, you'll lose the connection and need to reconnect. Are you sure?`;
                         e.preventDefault();
-                        e.returnValue = 'You have active connections. Are you sure you want to leave?';
-                        return e.returnValue;
+                        e.returnValue = message;
+                        return message;
                     }
+                });
+
+                window.addEventListener('pagehide', () => {
+                    this.disconnect();
                 });
             }
 
@@ -432,7 +650,6 @@
                 const editor = document.getElementById('documentEditor');
                 let isUpdating = false;
                 
-                // Handle content changes
                 editor.addEventListener('input', (e) => {
                     if (isUpdating) return;
                     
@@ -448,16 +665,8 @@
                     this.broadcastChange(change);
                 });
 
-                // Handle formatting commands
                 editor.addEventListener('keydown', (e) => {
                     if (e.ctrlKey || e.metaKey) {
-                        const change = {
-                            type: 'format',
-                            key: e.key,
-                            timestamp: Date.now(),
-                            peerId: this.peerId,
-                            peerName: this.peerName
-                        };
                         setTimeout(() => this.broadcastChange({
                             type: 'content',
                             content: editor.innerHTML,
@@ -468,7 +677,6 @@
                     }
                 });
 
-                // Receive content updates
                 this.onContentUpdate = (content) => {
                     isUpdating = true;
                     const selection = this.saveSelection();
@@ -476,6 +684,122 @@
                     this.restoreSelection(selection);
                     isUpdating = false;
                 };
+            }
+
+            setupWhiteboard() {
+                this.canvas = document.getElementById('whiteboardCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.isDrawing = false;
+                this.currentTool = 'pen';
+                this.currentColor = '#000000';
+                this.currentSize = 5;
+                this.currentOpacity = 1;
+                this.startX = 0;
+                this.startY = 0;
+                this.canvasHistory = [];
+                
+                // Resize canvas to container
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                
+                // Drawing event listeners
+                this.canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+                this.canvas.addEventListener('mouseup', () => this.stopDrawing());
+                this.canvas.addEventListener('mouseout', () => this.stopDrawing());
+                
+                // Touch events for mobile
+                this.canvas.addEventListener('touchstart', (e) => this.startDrawing(e));
+                this.canvas.addEventListener('touchmove', (e) => this.draw(e));
+                this.canvas.addEventListener('touchend', () => this.stopDrawing());
+                
+                // Save initial state
+                this.saveCanvasState();
+            }
+
+            resizeCanvas() {
+                const container = this.canvas.parentElement;
+                const rect = container.getBoundingClientRect();
+                this.canvas.width = rect.width - 2; // Account for border
+                this.canvas.height = Math.max(400, rect.height - 100);
+            }
+
+            startDrawing(e) {
+                this.isDrawing = true;
+                const rect = this.canvas.getBoundingClientRect();
+                this.startX = (e.clientX || e.touches[0].clientX) - rect.left;
+                this.startY = (e.clientY || e.touches[0].clientY) - rect.top;
+                
+                if (this.currentTool === 'pen' || this.currentTool === 'brush') {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.startX, this.startY);
+                } else if (this.currentTool === 'eraser') {
+                    this.ctx.globalCompositeOperation = 'destination-out';
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.startX, this.startY);
+                }
+                
+                e.preventDefault();
+            }
+
+            draw(e) {
+                if (!this.isDrawing) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const currentX = (e.clientX || e.touches[0].clientX) - rect.left;
+                const currentY = (e.clientY || e.touches[0].clientY) - rect.top;
+                
+                this.ctx.lineWidth = this.currentSize;
+                this.ctx.lineCap = 'round';
+                this.ctx.globalAlpha = this.currentOpacity;
+                
+                if (this.currentTool === 'pen') {
+                    this.ctx.globalCompositeOperation = 'source-over';
+                    this.ctx.strokeStyle = this.currentColor;
+                    this.ctx.lineTo(currentX, currentY);
+                    this.ctx.stroke();
+                } else if (this.currentTool === 'brush') {
+                    this.ctx.globalCompositeOperation = 'source-over';
+                    this.ctx.strokeStyle = this.currentColor;
+                    this.ctx.lineWidth = this.currentSize * 2;
+                    this.ctx.lineTo(currentX, currentY);
+                    this.ctx.stroke();
+                } else if (this.currentTool === 'eraser') {
+                    this.ctx.lineTo(currentX, currentY);
+                    this.ctx.stroke();
+                }
+                
+                e.preventDefault();
+            }
+
+            stopDrawing() {
+                if (!this.isDrawing) return;
+                
+                this.isDrawing = false;
+                this.ctx.globalCompositeOperation = 'source-over';
+                this.saveCanvasState();
+                
+                // Broadcast canvas state
+                this.broadcastCanvas();
+            }
+
+            saveCanvasState() {
+                this.canvasHistory.push(this.canvas.toDataURL());
+                if (this.canvasHistory.length > 20) {
+                    this.canvasHistory.shift();
+                }
+            }
+
+            broadcastCanvas() {
+                const canvasData = this.canvas.toDataURL();
+                const change = {
+                    type: 'canvas',
+                    data: canvasData,
+                    timestamp: Date.now(),
+                    peerId: this.peerId,
+                    peerName: this.peerName
+                };
+                this.broadcastChange(change);
             }
 
             saveSelection() {
@@ -520,7 +844,6 @@
                     ordered: true
                 });
                 
-                // Store the pending connection for host
                 const connectionData = {
                     pc: pc,
                     channel: dataChannel,
@@ -579,10 +902,9 @@
                 
                 const pc = new RTCPeerConnection({ iceServers: this.iceServers });
                 
-                // Store connection immediately for guest
                 const connectionData = {
                     pc: pc,
-                    channel: null, // Will be set when datachannel opens
+                    channel: null,
                     peerId: token.hostId,
                     peerName: token.hostName || 'Host'
                 };
@@ -629,7 +951,6 @@
                         await connection.pc.setRemoteDescription(token.answer);
                         this.connections.delete('pending');
                         
-                        // Update connection with actual peer info
                         connection.peerId = token.guestId;
                         connection.peerName = token.guestName || `Guest_${token.guestId.slice(0, 4)}`;
                         
@@ -639,7 +960,6 @@
                         console.log('Answer processed successfully');
                         this.updateStatus('connecting', 'Answer processed, establishing connection...');
                         
-                        // Clear the response input
                         const responseInput = document.getElementById('responseTokenInput');
                         if (responseInput) {
                             responseInput.value = '';
@@ -662,14 +982,13 @@
                     if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
                         this.updateStatus('connected', `Connected with ${peerName}`);
                         
-                        // Update participants
                         if (peerName !== 'pending') {
                             this.participants.add(peerName);
                         }
                         
                         this.updateParticipants();
                         this.hideConnectionSections();
-                        this.showConnectionAlert();
+                        this.showTempAlert('🎉 Connection Established! You can now collaborate in real-time.');
                         document.getElementById('disconnectBtn').disabled = false;
                         
                     } else if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed') {
@@ -682,15 +1001,14 @@
                 dataChannel.onopen = () => {
                     console.log('Data channel opened with', peerName);
                     
-                    // Send current document content to new peer if host
                     if (this.isHost) {
                         const syncMessage = {
                             type: 'sync',
                             content: document.getElementById('documentEditor').innerHTML,
+                            canvasData: this.canvas.toDataURL(),
                             participants: Array.from(this.participants)
                         };
                         
-                        // Small delay to ensure channel is fully ready
                         setTimeout(() => {
                             if (dataChannel.readyState === 'open') {
                                 dataChannel.send(JSON.stringify(syncMessage));
@@ -699,7 +1017,6 @@
                         }, 100);
                     }
                     
-                    // Send join notification
                     const joinMessage = {
                         type: 'user_joined',
                         peerId: this.peerId,
@@ -736,17 +1053,31 @@
             }
 
             handleMessage(message) {
+                console.log('Processing message type:', message.type, 'from peer:', message.peerName);
+                
                 switch (message.type) {
                     case 'content':
                         if (message.peerId !== this.peerId) {
+                            console.log('Updating content from peer:', message.peerName);
                             this.onContentUpdate(message.content);
                         }
                         break;
                         
+                    case 'canvas':
+                        if (message.peerId !== this.peerId) {
+                            console.log('Updating canvas from peer:', message.peerName);
+                            this.loadCanvasFromData(message.data);
+                        }
+                        break;
+                        
                     case 'sync':
+                        console.log('Syncing document and canvas content');
                         this.onContentUpdate(message.content);
+                        if (message.canvasData) {
+                            this.loadCanvasFromData(message.canvasData);
+                        }
                         if (message.participants) {
-                            this.participants = new Set(message.participants);
+                            message.participants.forEach(name => this.participants.add(name));
                             this.updateParticipants();
                         }
                         break;
@@ -755,16 +1086,25 @@
                         if (message.peerId !== this.peerId) {
                             this.participants.add(message.peerName);
                             this.updateParticipants();
-                            this.showUserAlert(`${message.peerName} joined the collaboration`);
+                            this.showTempAlert(`${message.peerName} joined the collaboration`);
                         }
                         break;
                         
                     case 'user_left':
                         this.participants.delete(message.peerName);
                         this.updateParticipants();
-                        this.showUserAlert(`${message.peerName} left the collaboration`);
+                        this.showTempAlert(`${message.peerName} left the collaboration`);
                         break;
                 }
+            }
+
+            loadCanvasFromData(dataUrl) {
+                const img = new Image();
+                img.onload = () => {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.drawImage(img, 0, 0);
+                };
+                img.src = dataUrl;
             }
 
             broadcastChange(change) {
@@ -772,10 +1112,11 @@
                 let sentCount = 0;
                 
                 this.connections.forEach((connection, peerId) => {
-                    if (connection.channel && connection.channel.readyState === 'open') {
+                    if (connection.channel && connection.channel.readyState === 'open' && peerId !== 'pending') {
                         try {
                             connection.channel.send(message);
                             sentCount++;
+                            console.log('Sent message to peer:', connection.peerName);
                         } catch (error) {
                             console.error('Error sending to peer:', peerId, error);
                         }
@@ -785,30 +1126,21 @@
                 console.log(`Broadcasted change to ${sentCount} peers`);
             }
 
-            showConnectionAlert() {
-                const alert = document.getElementById('connectionAlert');
-                alert.classList.add('show');
-                setTimeout(() => {
-                    alert.classList.remove('show');
-                }, 3000);
-            }
-
-            showUserAlert(message) {
+            showTempAlert(message) {
                 const existingAlert = document.querySelector('.user-alert');
                 if (existingAlert) {
                     existingAlert.remove();
                 }
 
                 const alert = document.createElement('div');
-                alert.className = 'connection-alert user-alert show';
-                alert.style.background = '#17a2b8';
+                alert.className = 'user-alert show';
                 alert.textContent = message;
                 document.body.appendChild(alert);
                 
                 setTimeout(() => {
                     alert.classList.remove('show');
                     setTimeout(() => alert.remove(), 300);
-                }, 2500);
+                }, 3000);
             }
 
             showCreateSection(token) {
@@ -850,11 +1182,11 @@
 
             updateParticipants() {
                 const count = this.participants.size;
-                const countElement = document.getElementById('participantCount');
-                const listElement = document.getElementById('participantsList');
+                const countElements = document.querySelectorAll('.participants-count');
+                const listElements = document.querySelectorAll('[id$="ParticipantsList"]');
                 
-                countElement.textContent = count;
-                listElement.textContent = Array.from(this.participants).join(', ');
+                countElements.forEach(el => el.textContent = count);
+                listElements.forEach(el => el.textContent = Array.from(this.participants).join(', '));
                 
                 if (count > 1) {
                     document.getElementById('peerInfo').classList.remove('hidden');
@@ -869,7 +1201,6 @@
                 this.participants.delete(peerName);
                 this.updateParticipants();
                 
-                // Broadcast user left message
                 const leaveMessage = {
                     type: 'user_left',
                     peerId: peerId,
@@ -881,12 +1212,11 @@
                     this.updateStatus('offline', 'All peers disconnected');
                     document.getElementById('disconnectBtn').disabled = true;
                 } else {
-                    this.showUserAlert(`${peerName} disconnected`);
+                    this.showTempAlert(`${peerName} disconnected`);
                 }
             }
 
             disconnect() {
-                // Send leave message before closing connections
                 const leaveMessage = {
                     type: 'user_left',
                     peerId: this.peerId,
@@ -917,12 +1247,25 @@
         // Global instance
         const editor = new CollaborativeEditor();
 
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Sync participant count when switching
+            editor.updateParticipants();
+        }
+
         // Rich Text Formatting Functions
         function formatDoc(command, value) {
             document.execCommand(command, false, value);
             document.getElementById('documentEditor').focus();
             
-            // Broadcast formatting change
             setTimeout(() => {
                 const change = {
                     type: 'content',
@@ -935,7 +1278,120 @@
             }, 10);
         }
 
-        // Global functions for UI
+        // Document Management Functions
+        function downloadDocument() {
+            const content = document.getElementById('documentEditor').innerHTML;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `collaborative-document-${new Date().toISOString().slice(0, 10)}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadDocument() {
+            document.getElementById('documentFile').click();
+        }
+
+        function handleDocumentLoad() {
+            const file = document.getElementById('documentFile').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('documentEditor').innerHTML = e.target.result;
+                    
+                    // Broadcast the loaded content
+                    const change = {
+                        type: 'content',
+                        content: e.target.result,
+                        timestamp: Date.now(),
+                        peerId: editor.peerId,
+                        peerName: editor.peerName
+                    };
+                    editor.broadcastChange(change);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Whiteboard Functions
+        function selectTool(tool) {
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            editor.currentTool = tool;
+            
+            // Update cursor
+            const cursor = tool === 'eraser' ? 'crosshair' : 'crosshair';
+            editor.canvas.style.cursor = cursor;
+        }
+
+        function setBrushSize(size) {
+            editor.currentSize = size;
+            document.getElementById('brushSizeValue').textContent = size;
+        }
+
+        function setOpacity(opacity) {
+            editor.currentOpacity = opacity;
+            document.getElementById('opacityValue').textContent = Math.round(opacity * 100) + '%';
+        }
+
+        function selectColor(color) {
+            editor.currentColor = color;
+            document.getElementById('customColor').value = color;
+            
+            // Update active color swatch
+            document.querySelectorAll('.color-swatch').forEach(swatch => swatch.classList.remove('active'));
+            document.querySelector(`[style*="${color}"]`)?.classList.add('active');
+        }
+
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear the whiteboard? This action cannot be undone.')) {
+                editor.ctx.clearRect(0, 0, editor.canvas.width, editor.canvas.height);
+                editor.saveCanvasState();
+                editor.broadcastCanvas();
+            }
+        }
+
+        function undoCanvas() {
+            if (editor.canvasHistory.length > 1) {
+                editor.canvasHistory.pop(); // Remove current state
+                const previousState = editor.canvasHistory[editor.canvasHistory.length - 1];
+                editor.loadCanvasFromData(previousState);
+                editor.broadcastCanvas();
+            }
+        }
+
+        function downloadWhiteboard() {
+            const link = document.createElement('a');
+            link.download = `whiteboard-${new Date().toISOString().slice(0, 10)}.png`;
+            link.href = editor.canvas.toDataURL();
+            link.click();
+        }
+
+        function loadWhiteboard() {
+            document.getElementById('whiteboardFile').click();
+        }
+
+        function handleWhiteboardLoad() {
+            const file = document.getElementById('whiteboardFile').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        editor.ctx.clearRect(0, 0, editor.canvas.width, editor.canvas.height);
+                        editor.ctx.drawImage(img, 0, 0, editor.canvas.width, editor.canvas.height);
+                        editor.saveCanvasState();
+                        editor.broadcastCanvas();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Global UI Functions
         function createRoom() {
             editor.createRoom();
         }
@@ -1015,7 +1471,6 @@
             const originalCreateSection = document.getElementById('createSection');
             const observer = new MutationObserver(() => {
                 if (!originalCreateSection.classList.contains('hidden')) {
-                    // Add response token input for room creators
                     if (!document.getElementById('responseTokenSection')) {
                         const responseSection = document.createElement('div');
                         responseSection.id = 'responseTokenSection';
@@ -1054,26 +1509,18 @@
             }
         }
 
-        // Placeholder functionality
+        // Editor placeholder and keyboard shortcuts
         document.getElementById('documentEditor').addEventListener('focus', function() {
             if (this.innerHTML === '' || this.innerHTML === '<br>') {
                 this.innerHTML = '';
             }
         });
 
-        document.getElementById('documentEditor').addEventListener('blur', function() {
-            if (this.innerHTML === '' || this.innerHTML === '<br>') {
-                this.innerHTML = '';
-            }
-        });
-
-        // Prevent default formatting on paste and clean it
         document.getElementById('documentEditor').addEventListener('paste', function(e) {
             e.preventDefault();
             const text = e.clipboardData.getData('text/plain');
             document.execCommand('insertText', false, text);
             
-            // Broadcast the change
             setTimeout(() => {
                 const change = {
                     type: 'content',
@@ -1086,7 +1533,6 @@
             }, 10);
         });
 
-        // Handle keyboard shortcuts for formatting
         document.getElementById('documentEditor').addEventListener('keydown', function(e) {
             if (e.ctrlKey || e.metaKey) {
                 switch(e.key.toLowerCase()) {
