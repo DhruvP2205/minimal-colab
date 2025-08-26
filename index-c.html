@@ -331,7 +331,14 @@
                 const pc = new RTCPeerConnection({ iceServers: this.iceServers });
                 const dataChannel = pc.createDataChannel('collaboration');
                 
-                this.setupPeerConnection(pc, dataChannel, 'guest');
+                // Store the pending connection
+                this.connections.set('pending', {
+                    pc: pc,
+                    channel: dataChannel,
+                    peerId: 'pending'
+                });
+                
+                this.setupPeerConnection(pc, dataChannel, 'pending');
                 
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
@@ -414,6 +421,9 @@
                     this.connections.delete('pending');
                     this.connections.set(token.guestId, connection);
                     this.updateParticipants();
+                    console.log('Answer processed, connection should establish soon...');
+                } else {
+                    console.error('No pending connection found for answer');
                 }
             }
 
@@ -660,6 +670,8 @@
                 const token = JSON.parse(responseToken);
                 if (token.type === 'answer') {
                     editor.handleAnswer(token);
+                    editor.updateStatus('connecting', 'Processing connection response...');
+                    document.getElementById('responseTokenInput').value = '';
                 } else {
                     alert('Invalid response token format');
                 }
