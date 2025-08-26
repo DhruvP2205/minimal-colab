@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -27,23 +27,39 @@
         .header {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             color: #4a5568;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+            font-size: 2em;
+        }
+
+        .disconnect-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+        }
+
+        .disconnect-btn:hover {
+            background: #c53030;
         }
 
         .mode-selection {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             padding: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
@@ -78,42 +94,110 @@
         }
 
         .connection-panel {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
         }
 
-        .role-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
+        .connection-header {
+            text-align: center;
             margin-bottom: 30px;
+        }
+
+        .connection-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .connection-subtitle {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .role-selection {
+            display: flex;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 8px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(79, 172, 254, 0.1);
         }
 
         .role-btn {
-            padding: 12px 25px;
-            border: 2px solid #4facfe;
-            border-radius: 8px;
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
             background: transparent;
-            color: #4facfe;
-            font-weight: bold;
+            color: #64748b;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .role-btn:hover, .role-btn.active {
-            background: #4facfe;
+        .role-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .role-btn:hover::before {
+            left: 100%;
+        }
+
+        .role-btn.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
         }
 
         .token-section {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+            border-radius: 15px;
+            padding: 30px;
             margin: 20px 0;
-            border-left: 5px solid #4facfe;
+            border: 2px solid rgba(79, 172, 254, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .token-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe, #fa709a, #fee140);
+        }
+
+        .token-section h3 {
+            color: #334155;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .token-section p {
+            color: #64748b;
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         .token-display {
@@ -125,6 +209,8 @@
             word-break: break-all;
             margin: 10px 0;
             position: relative;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .copy-btn {
@@ -163,24 +249,6 @@
         .input-group input:focus, .input-group textarea:focus {
             outline: none;
             border-color: #4facfe;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #38a169;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .file-label:hover {
-            background: #2f855a;
         }
 
         .btn {
@@ -256,29 +324,177 @@
             display: block;
         }
 
-        .editor-container {
+        /* Document Editor Styles */
+        .document-workspace {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .document-container {
+            background: #f8fafc;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .document-title-section {
+            margin-bottom: 30px;
+        }
+
+        .document-title-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .document-title-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .editor-toolbar {
             display: flex;
-            gap: 20px;
-            height: 500px;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+            border-radius: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .editor-btn {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            color: #4a5568;
+        }
+
+        .editor-btn:hover {
+            background: #f7fafc;
+            border-color: #4facfe;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.15);
+        }
+
+        .editor-btn.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-color: #4facfe;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.25);
+        }
+
+        .format-select {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            color: #4a5568;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .format-select:hover, .format-select:focus {
+            border-color: #4facfe;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: linear-gradient(to bottom, transparent, #e2e8f0, transparent);
+            margin: 0 8px;
+        }
+
+        .a4-container {
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .a4-page {
+            width: 21cm;
+            min-height: 29.7cm;
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+
+        @media screen and (max-width: 21cm) {
+            .a4-page {
+                width: 100%;
+                min-height: calc(100vh - 400px);
+            }
         }
 
         .editor {
-            flex: 1;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            width: 100%;
+            min-height: 29.7cm;
+            border: none;
+            padding: 2.5cm 2cm;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2d3748;
+            background: white;
             resize: none;
-            background: #f7fafc;
+            outline: none;
+            box-sizing: border-box;
         }
 
+        @media screen and (max-width: 21cm) {
+            .editor {
+                min-height: calc(100vh - 400px);
+                padding: 40px 30px;
+            }
+        }
+
+        .editor:focus {
+            outline: none;
+        }
+
+        /* Page ruler/guidelines */
+        .page-info {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: monospace;
+        }
+
+        /* Whiteboard Styles */
         .canvas-container {
             position: relative;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             background: white;
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         #whiteboard {
@@ -286,44 +502,118 @@
             cursor: crosshair;
         }
 
+        .canvas-cursor {
+            position: absolute;
+            pointer-events: none;
+            border: 2px solid #4facfe;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: none;
+        }
+
         .canvas-tools {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            align-items: center;
             margin-bottom: 20px;
-            padding: 15px;
+            padding: 20px;
             background: #f7fafc;
             border-radius: 8px;
-            flex-wrap: wrap;
         }
 
         .tool-group {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .tool-group label {
             font-weight: bold;
             color: #4a5568;
+            font-size: 14px;
         }
 
-        .color-input {
-            width: 50px;
-            height: 35px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin-top: 5px;
         }
 
-        .size-input {
-            width: 80px;
-        }
-
-        .shape-select {
-            padding: 8px;
-            border-radius: 5px;
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-option:hover, .color-option.active {
+            border-color: #4a5568;
+            transform: scale(1.1);
+        }
+
+        .gradient-options {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .gradient-option {
+            width: 40px;
+            height: 25px;
+            border-radius: 4px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .gradient-option:hover, .gradient-option.active {
+            border-color: #4a5568;
+            transform: scale(1.05);
+        }
+
+        .size-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .size-preview {
+            background: #4a5568;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .tool-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .tool-btn {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .tool-btn:hover {
+            border-color: #4facfe;
+            background: #f0f9ff;
+        }
+
+        .tool-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
         }
 
         .download-section {
@@ -331,6 +621,7 @@
             gap: 15px;
             margin-top: 20px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .hidden {
@@ -347,6 +638,7 @@
             font-weight: bold;
             z-index: 1000;
             animation: slideIn 0.3s ease;
+            max-width: 300px;
         }
 
         .alert-success {
@@ -370,7 +662,30 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #38a169;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .file-label:hover {
+            background: #2f855a;
+        }
+
         @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
             .mode-buttons, .role-buttons {
                 flex-direction: column;
                 align-items: center;
@@ -386,8 +701,7 @@
             }
             
             .canvas-tools {
-                flex-direction: column;
-                align-items: flex-start;
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -396,55 +710,54 @@
     <div class="container">
         <div class="header">
             <h1>🚀 WebRTC Collaborative Platform</h1>
-            <p>Connect, Create, and Collaborate in Real-time</p>
+            <button class="disconnect-btn" id="disconnectBtn" onclick="disconnect()">🔌 Disconnect</button>
         </div>
 
         <div class="mode-selection">
-            <h2 style="text-align: center; margin-bottom: 20px;">Choose Your Mode</h2>
             <div class="mode-buttons">
                 <button class="mode-btn active" onclick="setMode('document')">📝 Document Editor</button>
                 <button class="mode-btn" onclick="setMode('whiteboard')">🎨 Whiteboard</button>
             </div>
+        </div>
 
-            <div class="connection-panel">
-                <div class="role-buttons">
-                    <button class="role-btn active" onclick="setRole('host')">🏠 Host Room</button>
-                    <button class="role-btn" onclick="setRole('guest')">🔗 Join Room</button>
-                </div>
-
-                <div id="hostPanel">
-                    <div class="token-section">
-                        <h3>🔑 Room Token</h3>
-                        <p>Share this token with collaborators:</p>
-                        <div class="token-display" id="tokenDisplay">
-                            Click "Create Room" to generate token
-                            <button class="copy-btn" onclick="copyToken()">📋 Copy</button>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <button class="btn btn-primary" onclick="createRoom()">🚀 Create Room</button>
-                            <button class="btn btn-success" onclick="downloadToken()">💾 Download Token</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="guestPanel" class="hidden">
-                    <div class="token-section">
-                        <h3>🔗 Join Room</h3>
-                        <div class="input-group">
-                            <label>Enter Room Token:</label>
-                            <textarea id="tokenInput" rows="4" placeholder="Paste the room token here..."></textarea>
-                        </div>
-                        <div style="margin: 15px 0;">
-                            <span>Or upload token file: </span>
-                            <input type="file" id="tokenFile" class="file-input" accept=".json" onchange="loadTokenFile()">
-                            <label for="tokenFile" class="file-label">📁 Choose File</label>
-                        </div>
-                        <button class="btn btn-primary" onclick="joinRoom()">🚀 Join Room</button>
-                    </div>
-                </div>
-
-                <div id="connectionStatus"></div>
+        <div class="connection-panel" id="connectionPanel">
+            <div class="role-buttons">
+                <button class="role-btn active" onclick="setRole('host')">🏠 Host Room</button>
+                <button class="role-btn" onclick="setRole('guest')">🔗 Join Room</button>
             </div>
+
+            <div id="hostPanel">
+                <div class="token-section">
+                    <h3>🔑 Room Token</h3>
+                    <p>Share this token with collaborators:</p>
+                    <div class="token-display" id="tokenDisplay">
+                        Click "Create Room" to generate token
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="createRoom()">🚀 Create Room</button>
+                        <button class="btn btn-success" onclick="downloadToken()">💾 Download Token</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="guestPanel" class="hidden">
+                <div class="token-section">
+                    <h3>🔗 Join Room</h3>
+                    <div class="input-group">
+                        <label>Enter Room Token:</label>
+                        <textarea id="tokenInput" rows="4" placeholder="Paste the room token here..."></textarea>
+                    </div>
+                    <div style="margin: 15px 0;">
+                        <span>Or upload token file: </span>
+                        <input type="file" id="tokenFile" class="file-input" accept=".json" onchange="loadTokenFile()">
+                        <label for="tokenFile" class="file-label">📁 Choose File</label>
+                    </div>
+                    <button class="btn btn-primary" onclick="joinRoom()">🚀 Join Room</button>
+                </div>
+            </div>
+
+            <div id="connectionStatus"></div>
+            <div id="answerSection" class="hidden"></div>
         </div>
 
         <!-- Document Editor Workspace -->
@@ -454,45 +767,99 @@
                 <label>Document Title:</label>
                 <input type="text" id="documentTitle" placeholder="Enter document title..." value="Untitled Document">
             </div>
+            
+            <div class="editor-toolbar">
+                <button class="editor-btn" onclick="formatText('bold')" title="Bold"><b>B</b></button>
+                <button class="editor-btn" onclick="formatText('italic')" title="Italic"><i>I</i></button>
+                <button class="editor-btn" onclick="formatText('underline')" title="Underline"><u>U</u></button>
+                <div style="border-left: 1px solid #cbd5e0; height: 20px; margin: 0 5px;"></div>
+                <select class="format-select" onchange="formatText('fontSize', this.value)">
+                    <option value="14px">14px</option>
+                    <option value="16px" selected>16px</option>
+                    <option value="18px">18px</option>
+                    <option value="20px">20px</option>
+                    <option value="24px">24px</option>
+                </select>
+                <select class="format-select" onchange="formatText('fontFamily', this.value)">
+                    <option value="Georgia">Georgia</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                </select>
+                <div style="border-left: 1px solid #cbd5e0; height: 20px; margin: 0 5px;"></div>
+                <button class="editor-btn" onclick="formatText('justifyLeft')" title="Align Left">⬅</button>
+                <button class="editor-btn" onclick="formatText('justifyCenter')" title="Center">⬛</button>
+                <button class="editor-btn" onclick="formatText('justifyRight')" title="Align Right">➡</button>
+                <div style="border-left: 1px solid #cbd5e0; height: 20px; margin: 0 5px;"></div>
+                <button class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">• List</button>
+                <button class="editor-btn" onclick="formatText('insertOrderedList')" title="Number List">1. List</button>
+            </div>
+            
             <div class="editor-container">
-                <textarea id="documentEditor" class="editor" placeholder="Start typing your document here..."></textarea>
+                <div id="documentEditor" class="editor" contenteditable="true" style="overflow-y: auto;"></div>
             </div>
             <div class="download-section">
                 <button class="btn btn-success" onclick="saveDocument()">💾 Save Document</button>
                 <button class="btn btn-primary" onclick="downloadDocument()">📥 Download Document</button>
                 <button class="btn btn-warning" onclick="loadDocument()">📁 Load Document</button>
-                <input type="file" id="docFile" class="file-input" accept=".txt,.json" onchange="handleDocumentFile()">
+                <input type="file" id="docFile" class="file-input" accept=".txt,.html" onchange="handleDocumentFile()">
             </div>
         </div>
 
         <!-- Whiteboard Workspace -->
         <div id="whiteboardWorkspace" class="workspace">
             <h2>🎨 Whiteboard</h2>
+            
             <div class="canvas-tools">
                 <div class="tool-group">
-                    <label>🎨 Color:</label>
-                    <input type="color" class="color-input" id="brushColor" value="#000000">
+                    <label>🎨 Colors</label>
+                    <div class="color-palette" id="colorPalette"></div>
+                    <input type="color" id="customColor" style="width: 100%; height: 35px; margin-top: 5px;">
                 </div>
+                
                 <div class="tool-group">
-                    <label>📏 Size:</label>
-                    <input type="range" class="size-input" id="brushSize" min="1" max="50" value="5">
-                    <span id="sizeDisplay">5</span>px
+                    <label>🌈 Gradients</label>
+                    <div class="gradient-options" id="gradientOptions"></div>
                 </div>
+                
                 <div class="tool-group">
-                    <label>🔧 Tool:</label>
-                    <select class="shape-select" id="drawingTool">
-                        <option value="brush">🖌️ Brush</option>
-                        <option value="eraser">🧽 Eraser</option>
-                        <option value="line">📏 Line</option>
-                        <option value="rectangle">▭ Rectangle</option>
-                        <option value="circle">⭕ Circle</option>
-                    </select>
+                    <label>📏 Brush Size</label>
+                    <input type="range" id="brushSize" min="1" max="50" value="5">
+                    <div class="size-display">
+                        <div class="size-preview" id="sizePreview"></div>
+                        <span id="sizeText">5px</span>
+                    </div>
                 </div>
-                <button class="btn btn-danger" onclick="clearCanvas()">🗑️ Clear Canvas</button>
+                
+                <div class="tool-group">
+                    <label>🔧 Tools</label>
+                    <div class="tool-buttons">
+                        <button class="tool-btn active" onclick="setTool('brush')" data-tool="brush">🖌️ Brush</button>
+                        <button class="tool-btn" onclick="setTool('eraser')" data-tool="eraser">🧽 Eraser</button>
+                        <button class="tool-btn" onclick="setTool('line')" data-tool="line">📏 Line</button>
+                        <button class="tool-btn" onclick="setTool('rectangle')" data-tool="rectangle">▭ Rectangle</button>
+                        <button class="tool-btn" onclick="setTool('circle')" data-tool="circle">⭕ Circle</button>
+                        <button class="tool-btn" onclick="setTool('triangle')" data-tool="triangle">🔺 Triangle</button>
+                        <button class="tool-btn" onclick="setTool('arrow')" data-tool="arrow">➤ Arrow</button>
+                        <button class="tool-btn" onclick="setTool('star')" data-tool="star">⭐ Star</button>
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <label>⚙️ Actions</label>
+                    <div class="tool-buttons">
+                        <button class="btn btn-danger" onclick="clearCanvas()">🗑️ Clear</button>
+                        <button class="btn btn-warning" onclick="undoCanvas()">↶ Undo</button>
+                        <button class="btn btn-info" onclick="redoCanvas()">↷ Redo</button>
+                    </div>
+                </div>
             </div>
-            <div class="canvas-container">
-                <canvas id="whiteboard" width="800" height="500"></canvas>
+            
+            <div class="canvas-container" onmousemove="updateCursor(event)">
+                <canvas id="whiteboard" width="1200" height="600"></canvas>
+                <div class="canvas-cursor" id="canvasCursor"></div>
             </div>
+            
             <div class="download-section">
                 <button class="btn btn-success" onclick="saveCanvas()">💾 Save Canvas</button>
                 <button class="btn btn-primary" onclick="downloadCanvas()">📥 Download Canvas</button>
@@ -538,7 +905,7 @@
             
             setTimeout(() => {
                 alert.remove();
-            }, 3000);
+            }, 4000);
         }
 
         function generateSecureId() {
@@ -560,12 +927,20 @@
         let isDrawing = false;
         let startX = 0;
         let startY = 0;
+        let currentTool = 'brush';
+        let currentColor = '#000000';
+        let currentGradient = null;
+        let brushSize = 5;
+        let canvasHistory = [];
+        let historyIndex = -1;
+        let pendingAnswer = null;
 
         // WebRTC Configuration
         const rtcConfig = {
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' }
             ]
         };
 
@@ -573,38 +948,47 @@
         function init() {
             setupEventListeners();
             setupCanvas();
-            loadFromLocalStorage();
+            setupColorPalette();
+            setupGradients();
+            loadFromStorage();
+            updateSizePreview();
         }
 
         function setupEventListeners() {
             const documentEditor = document.getElementById('documentEditor');
-            const brushSize = document.getElementById('brushSize');
-            const sizeDisplay = document.getElementById('sizeDisplay');
+            const brushSizeSlider = document.getElementById('brushSize');
 
             documentEditor.addEventListener('input', function() {
                 if (isConnected && dataChannel && dataChannel.readyState === 'open') {
                     sendMessage({
                         type: 'document-update',
-                        content: this.value,
+                        content: this.innerHTML,
                         title: document.getElementById('documentTitle').value
                     });
                 }
-                saveToLocalStorage();
+                saveToStorage();
             });
 
             document.getElementById('documentTitle').addEventListener('input', function() {
                 if (isConnected && dataChannel && dataChannel.readyState === 'open') {
                     sendMessage({
                         type: 'document-update',
-                        content: documentEditor.value,
+                        content: documentEditor.innerHTML,
                         title: this.value
                     });
                 }
-                saveToLocalStorage();
+                saveToStorage();
             });
 
-            brushSize.addEventListener('input', function() {
-                sizeDisplay.textContent = this.value;
+            brushSizeSlider.addEventListener('input', function() {
+                brushSize = parseInt(this.value);
+                updateSizePreview();
+            });
+
+            document.getElementById('customColor').addEventListener('change', function() {
+                currentColor = this.value;
+                currentGradient = null;
+                updateColorSelection();
             });
         }
 
@@ -618,11 +1002,122 @@
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mouseout', stopDrawing);
+            canvas.addEventListener('mouseleave', function() {
+                document.getElementById('canvasCursor').style.display = 'none';
+            });
 
             // Touch events for mobile
             canvas.addEventListener('touchstart', handleTouch);
             canvas.addEventListener('touchmove', handleTouch);
             canvas.addEventListener('touchend', stopDrawing);
+
+            // Save initial state
+            saveCanvasState();
+        }
+
+        function setupColorPalette() {
+            const colors = [
+                '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+                '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#C0C0C0', '#808080',
+                '#FF9999', '#99FF99', '#9999FF', '#FFFF99', '#FF99FF', '#99FFFF', '#FFB366', '#B366FF'
+            ];
+            
+            const palette = document.getElementById('colorPalette');
+            colors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'color-option';
+                colorDiv.style.backgroundColor = color;
+                colorDiv.onclick = () => selectColor(color);
+                palette.appendChild(colorDiv);
+            });
+        }
+
+        function setupGradients() {
+            const gradients = [
+                'linear-gradient(45deg, #ff0000, #ffff00)',
+                'linear-gradient(45deg, #00ff00, #0000ff)',
+                'linear-gradient(45deg, #ff00ff, #00ffff)',
+                'linear-gradient(45deg, #ff8000, #ff0080)',
+                'linear-gradient(90deg, #ff0000, #00ff00, #0000ff)',
+                'radial-gradient(circle, #ff0000, #ffff00)'
+            ];
+            
+            const gradientContainer = document.getElementById('gradientOptions');
+            gradients.forEach(gradient => {
+                const gradientDiv = document.createElement('div');
+                gradientDiv.className = 'gradient-option';
+                gradientDiv.style.background = gradient;
+                gradientDiv.onclick = () => selectGradient(gradient);
+                gradientContainer.appendChild(gradientDiv);
+            });
+        }
+
+        function selectColor(color) {
+            currentColor = color;
+            currentGradient = null;
+            updateColorSelection();
+        }
+
+        function selectGradient(gradient) {
+            currentGradient = gradient;
+            updateColorSelection();
+        }
+
+        function updateColorSelection() {
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.gradient-option').forEach(el => el.classList.remove('active'));
+            
+            if (currentGradient) {
+                document.querySelectorAll('.gradient-option').forEach(el => {
+                    if (el.style.background === currentGradient) {
+                        el.classList.add('active');
+                    }
+                });
+            } else {
+                document.querySelectorAll('.color-option').forEach(el => {
+                    if (el.style.backgroundColor === currentColor || 
+                        el.style.backgroundColor === rgbToHex(currentColor)) {
+                        el.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function rgbToHex(rgb) {
+            if (rgb.startsWith('#')) return rgb;
+            const result = rgb.match(/\d+/g);
+            if (!result) return rgb;
+            return '#' + result.map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+        }
+
+        function updateSizePreview() {
+            const preview = document.getElementById('sizePreview');
+            const text = document.getElementById('sizeText');
+            preview.style.width = brushSize + 'px';
+            preview.style.height = brushSize + 'px';
+            text.textContent = brushSize + 'px';
+        }
+
+        function updateCursor(event) {
+            const cursor = document.getElementById('canvasCursor');
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            cursor.style.left = (event.clientX - rect.left) + 'px';
+            cursor.style.top = (event.clientY - rect.top) + 'px';
+            cursor.style.width = brushSize + 'px';
+            cursor.style.height = brushSize + 'px';
+            cursor.style.display = 'block';
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            
+            const cursor = document.getElementById('canvasCursor');
+            cursor.style.borderColor = tool === 'eraser' ? '#ff0000' : '#4facfe';
         }
 
         function handleTouch(e) {
@@ -642,7 +1137,6 @@
         function setMode(mode) {
             currentMode = mode;
             
-            // Update UI
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
@@ -656,7 +1150,6 @@
             currentRole = role;
             isHost = role === 'host';
             
-            // Update UI
             document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
@@ -689,10 +1182,8 @@
 
                 roomToken.offer = offer;
                 
-                document.getElementById('tokenDisplay').innerHTML = `
-                    ${JSON.stringify(roomToken, null, 2)}
-                    <button class="copy-btn" onclick="copyToken()">📋 Copy</button>
-                `;
+                const tokenText = JSON.stringify(roomToken, null, 2);
+                document.getElementById('tokenDisplay').innerHTML = `<pre>${tokenText}</pre>`;
 
                 updateConnectionStatus('Waiting for connection...', 'connecting');
                 showAlert('Room created successfully! Share the token with collaborators.', 'success');
@@ -727,28 +1218,34 @@
                     dataChannel = channel;
                 };
 
-                await peerConnection.setRemoteDescription(token.offer);
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(token.offer));
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
 
-                // In a real application, you would send this answer back to the host
-                // For this demo, we'll show it to be shared manually
                 const answerToken = {
                     id: token.id,
                     answer: answer,
                     timestamp: Date.now()
                 };
 
-                updateConnectionStatus('Share this answer token with the host:', 'connecting');
+                pendingAnswer = answerToken;
                 
-                const statusDiv = document.getElementById('connectionStatus');
-                statusDiv.innerHTML += `
-                    <div class="token-display" style="margin-top: 10px;">
-                        ${JSON.stringify(answerToken, null, 2)}
-                        <button class="copy-btn" onclick="copyText('${JSON.stringify(answerToken).replace(/'/g, "\\'")}')">📋 Copy</button>
+                updateConnectionStatus('Send this answer token to the host:', 'connecting');
+                
+                const answerSection = document.getElementById('answerSection');
+                answerSection.classList.remove('hidden');
+                answerSection.innerHTML = `
+                    <div class="token-section">
+                        <h3>📤 Send This Answer to Host</h3>
+                        <div class="token-display">
+                            <pre>${JSON.stringify(answerToken, null, 2)}</pre>
+                            <button class="copy-btn" onclick="copyAnswerToken()">📋 Copy</button>
+                        </div>
+                        <button class="btn btn-success" onclick="downloadAnswer()">💾 Download Answer</button>
                     </div>
-                    <button class="btn btn-primary" onclick="showAnswerInput()">📨 Receive Host Response</button>
                 `;
+
+                showAlert('Answer generated! Send it to the host to complete connection.', 'info');
 
             } catch (error) {
                 console.error('Error joining room:', error);
@@ -756,39 +1253,35 @@
             }
         }
 
-        function showAnswerInput() {
-            const statusDiv = document.getElementById('connectionStatus');
-            statusDiv.innerHTML += `
-                <div class="token-section" style="margin-top: 20px;">
-                    <h4>Host Response</h4>
-                    <textarea id="hostResponse" rows="4" placeholder="Paste the host response here..."></textarea>
-                    <br><br>
-                    <button class="btn btn-primary" onclick="processHostResponse()">🔗 Complete Connection</button>
-                </div>
-            `;
+        function copyAnswerToken() {
+            if (pendingAnswer) {
+                const tokenText = JSON.stringify(pendingAnswer, null, 2);
+                navigator.clipboard.writeText(tokenText).then(() => {
+                    showAlert('Answer token copied to clipboard!', 'success');
+                }).catch(() => {
+                    showAlert('Failed to copy answer token.', 'error');
+                });
+            }
         }
 
-        async function processHostResponse() {
-            const responseText = document.getElementById('hostResponse').value.trim();
+        function downloadAnswer() {
+            if (!pendingAnswer) {
+                showAlert('No answer token to download.', 'warning');
+                return;
+            }
+
+            const blob = new Blob([JSON.stringify(pendingAnswer, null, 2)], {
+                type: 'application/json'
+            });
             
-            if (!responseText) {
-                showAlert('Please enter the host response.', 'warning');
-                return;
-            }
-
-            const response = validateJSON(responseText);
-            if (!response || !response.answer) {
-                showAlert('Invalid response format.', 'error');
-                return;
-            }
-
-            try {
-                await peerConnection.setRemoteDescription(response.answer);
-                showAlert('Connection established successfully!', 'success');
-            } catch (error) {
-                console.error('Error processing host response:', error);
-                showAlert('Failed to establish connection.', 'error');
-            }
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `answer-token-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showAlert('Answer token downloaded!', 'success');
         }
 
         function setupPeerConnection() {
@@ -799,18 +1292,89 @@
                     peerConnection.iceConnectionState === 'completed') {
                     isConnected = true;
                     updateConnectionStatus('🟢 Connected successfully!', 'connected');
+                    hideConnectionPanel();
                     showAlert('Peer connection established!', 'success');
                 } else if (peerConnection.iceConnectionState === 'disconnected' || 
                           peerConnection.iceConnectionState === 'failed') {
                     isConnected = false;
                     updateConnectionStatus('❌ Connection lost', 'error');
+                    showConnectionPanel();
                     showAlert('Connection lost. Please try reconnecting.', 'error');
                 }
             };
 
-            peerConnection.onconnectionstatechange = function() {
-                console.log('Connection state:', peerConnection.connectionState);
+            // For host: handle incoming answer
+            if (isHost) {
+                const originalCreateDataChannel = peerConnection.createDataChannel;
+                peerConnection.createDataChannel = function() {
+                    const channel = originalCreateDataChannel.apply(this, arguments);
+                    
+                    // Add answer input field for host
+                    setTimeout(() => {
+                        if (!isConnected) {
+                            const statusDiv = document.getElementById('connectionStatus');
+                            if (!document.getElementById('hostAnswerInput')) {
+                                statusDiv.innerHTML += `
+                                    <div class="token-section" style="margin-top: 20px;">
+                                        <h3>📥 Receive Guest Answer</h3>
+                                        <textarea id="hostAnswerInput" rows="4" placeholder="Paste the guest answer token here..."></textarea>
+                                        <br><br>
+                                        <input type="file" id="answerFile" class="file-input" accept=".json" onchange="loadAnswerFile()">
+                                        <label for="answerFile" class="file-label">📁 Load Answer File</label>
+                                        <button class="btn btn-primary" onclick="processGuestAnswer()">🔗 Complete Connection</button>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }, 1000);
+                    
+                    return channel;
+                };
+            }
+        }
+
+        function loadAnswerFile() {
+            const file = document.getElementById('answerFile').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const answer = validateJSON(e.target.result);
+                    if (answer) {
+                        document.getElementById('hostAnswerInput').value = JSON.stringify(answer, null, 2);
+                        showAlert('Answer file loaded successfully!', 'success');
+                    } else {
+                        showAlert('Invalid answer file format.', 'error');
+                    }
+                } catch (error) {
+                    showAlert('Error reading answer file.', 'error');
+                }
             };
+            reader.readAsText(file);
+        }
+
+        async function processGuestAnswer() {
+            const answerText = document.getElementById('hostAnswerInput').value.trim();
+            
+            if (!answerText) {
+                showAlert('Please enter the guest answer.', 'warning');
+                return;
+            }
+
+            const answerData = validateJSON(answerText);
+            if (!answerData || !answerData.answer) {
+                showAlert('Invalid answer format.', 'error');
+                return;
+            }
+
+            try {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
+                showAlert('Processing connection...', 'info');
+            } catch (error) {
+                console.error('Error processing guest answer:', error);
+                showAlert('Failed to establish connection. Please check the answer token.', 'error');
+            }
         }
 
         function setupDataChannel(channel) {
@@ -818,21 +1382,28 @@
                 console.log('Data channel opened');
                 isConnected = true;
                 updateConnectionStatus('🟢 Data channel connected!', 'connected');
+                hideConnectionPanel();
                 
-                // Send current content to new peer
                 if (isHost) {
                     sendCurrentContent();
                 }
+                
+                showAlert('Ready to collaborate!', 'success');
             };
 
             channel.onclose = function() {
                 console.log('Data channel closed');
                 isConnected = false;
                 updateConnectionStatus('❌ Data channel closed', 'error');
+                showConnectionPanel();
             };
 
             channel.onmessage = function(event) {
-                handleMessage(JSON.parse(event.data));
+                try {
+                    handleMessage(JSON.parse(event.data));
+                } catch (error) {
+                    console.error('Error handling message:', error);
+                }
             };
 
             channel.onerror = function(error) {
@@ -843,7 +1414,11 @@
 
         function sendMessage(message) {
             if (dataChannel && dataChannel.readyState === 'open') {
-                dataChannel.send(JSON.stringify(message));
+                try {
+                    dataChannel.send(JSON.stringify(message));
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
             }
         }
 
@@ -851,7 +1426,7 @@
             if (currentMode === 'document') {
                 sendMessage({
                     type: 'document-update',
-                    content: document.getElementById('documentEditor').value,
+                    content: document.getElementById('documentEditor').innerHTML,
                     title: document.getElementById('documentTitle').value
                 });
             } else if (currentMode === 'whiteboard') {
@@ -866,9 +1441,9 @@
             switch (message.type) {
                 case 'document-update':
                     if (currentMode === 'document') {
-                        document.getElementById('documentEditor').value = sanitizeInput(message.content);
+                        document.getElementById('documentEditor').innerHTML = message.content;
                         document.getElementById('documentTitle').value = sanitizeInput(message.title);
-                        saveToLocalStorage();
+                        saveToStorage();
                     }
                     break;
                     
@@ -887,19 +1462,34 @@
                 case 'canvas-clear':
                     if (currentMode === 'whiteboard') {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        saveToLocalStorage();
+                        saveCanvasState();
+                        saveToStorage();
                     }
                     break;
             }
         }
 
-        function copyToken() {
-            const tokenText = document.getElementById('tokenDisplay').textContent;
-            copyText(tokenText);
+        function hideConnectionPanel() {
+            document.getElementById('connectionPanel').style.display = 'none';
+            document.getElementById('disconnectBtn').style.display = 'block';
         }
 
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
+        function showConnectionPanel() {
+            document.getElementById('connectionPanel').style.display = 'block';
+            document.getElementById('disconnectBtn').style.display = 'none';
+        }
+
+        function disconnect() {
+            closeConnection();
+            showConnectionPanel();
+            showAlert('Disconnected from collaboration session.', 'info');
+        }
+
+        function copyToken() {
+            const tokenDisplay = document.getElementById('tokenDisplay');
+            const tokenText = tokenDisplay.textContent.trim();
+            
+            navigator.clipboard.writeText(tokenText).then(() => {
                 showAlert('Token copied to clipboard!', 'success');
             }).catch(() => {
                 showAlert('Failed to copy token.', 'error');
@@ -949,7 +1539,11 @@
 
         function updateConnectionStatus(message, type) {
             const statusDiv = document.getElementById('connectionStatus');
-            statusDiv.innerHTML = `<div class="status ${type}">${sanitizeInput(message)}</div>`;
+            if (message) {
+                statusDiv.innerHTML = `<div class="status ${type}">${sanitizeInput(message)}</div>`;
+            } else {
+                statusDiv.innerHTML = '';
+            }
         }
 
         function closeConnection() {
@@ -962,7 +1556,25 @@
                 dataChannel = null;
             }
             isConnected = false;
+            pendingAnswer = null;
             updateConnectionStatus('', '');
+            document.getElementById('answerSection').classList.add('hidden');
+        }
+
+        // Document Editor Functions
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('documentEditor').focus();
+            
+            // Send update to peer
+            if (isConnected && dataChannel && dataChannel.readyState === 'open') {
+                sendMessage({
+                    type: 'document-update',
+                    content: document.getElementById('documentEditor').innerHTML,
+                    title: document.getElementById('documentTitle').value
+                });
+            }
+            saveToStorage();
         }
 
         // Drawing functions
@@ -971,37 +1583,32 @@
             startX = e.offsetX;
             startY = e.offsetY;
             
-            const tool = document.getElementById('drawingTool').value;
-            if (tool === 'brush' || tool === 'eraser') {
+            if (currentTool === 'brush' || currentTool === 'eraser') {
                 ctx.beginPath();
                 ctx.moveTo(startX, startY);
             }
+            
+            saveCanvasState();
         }
 
         function draw(e) {
             if (!isDrawing) return;
             
-            const tool = document.getElementById('drawingTool').value;
-            const color = document.getElementById('brushColor').value;
-            const size = document.getElementById('brushSize').value;
+            const endX = e.offsetX;
+            const endY = e.offsetY;
             
-            ctx.lineWidth = size;
-            ctx.strokeStyle = tool === 'eraser' ? '#FFFFFF' : color;
-            ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
-            
-            if (tool === 'brush' || tool === 'eraser') {
-                ctx.lineTo(e.offsetX, e.offsetY);
-                ctx.stroke();
+            if (currentTool === 'brush' || currentTool === 'eraser') {
+                drawBrushStroke(endX, endY);
                 
-                // Send drawing data to peer
                 if (isConnected) {
                     sendMessage({
                         type: 'canvas-draw',
-                        tool: tool,
-                        color: color,
-                        size: size,
-                        x: e.offsetX,
-                        y: e.offsetY,
+                        tool: currentTool,
+                        color: currentColor,
+                        gradient: currentGradient,
+                        size: brushSize,
+                        x: endX,
+                        y: endY,
                         startX: startX,
                         startY: startY,
                         drawing: true
@@ -1014,40 +1621,21 @@
             if (!isDrawing) return;
             isDrawing = false;
             
-            const tool = document.getElementById('drawingTool').value;
-            const color = document.getElementById('brushColor').value;
-            const size = document.getElementById('brushSize').value;
+            const endX = e.offsetX;
+            const endY = e.offsetY;
             
-            if (tool === 'line' || tool === 'rectangle' || tool === 'circle') {
-                ctx.lineWidth = size;
-                ctx.strokeStyle = color;
-                ctx.globalCompositeOperation = 'source-over';
+            if (currentTool !== 'brush' && currentTool !== 'eraser') {
+                drawShape(startX, startY, endX, endY);
                 
-                if (tool === 'line') {
-                    ctx.beginPath();
-                    ctx.moveTo(startX, startY);
-                    ctx.lineTo(e.offsetX, e.offsetY);
-                    ctx.stroke();
-                } else if (tool === 'rectangle') {
-                    ctx.beginPath();
-                    ctx.rect(startX, startY, e.offsetX - startX, e.offsetY - startY);
-                    ctx.stroke();
-                } else if (tool === 'circle') {
-                    const radius = Math.sqrt(Math.pow(e.offsetX - startX, 2) + Math.pow(e.offsetY - startY, 2));
-                    ctx.beginPath();
-                    ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
-                    ctx.stroke();
-                }
-                
-                // Send shape data to peer
                 if (isConnected) {
                     sendMessage({
                         type: 'canvas-draw',
-                        tool: tool,
-                        color: color,
-                        size: size,
-                        x: e.offsetX,
-                        y: e.offsetY,
+                        tool: currentTool,
+                        color: currentColor,
+                        gradient: currentGradient,
+                        size: brushSize,
+                        x: endX,
+                        y: endY,
                         startX: startX,
                         startY: startY,
                         drawing: false
@@ -1055,41 +1643,153 @@
                 }
             }
             
-            saveToLocalStorage();
+            saveCanvasState();
+            saveToStorage();
+        }
+
+        function drawBrushStroke(x, y) {
+            ctx.lineWidth = brushSize;
+            ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
+            
+            if (currentGradient && currentTool !== 'eraser') {
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                applyGradient(gradient, currentGradient);
+                ctx.strokeStyle = gradient;
+            } else {
+                ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+            }
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function drawShape(x1, y1, x2, y2) {
+            ctx.lineWidth = brushSize;
+            ctx.globalCompositeOperation = 'source-over';
+            
+            if (currentGradient) {
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                applyGradient(gradient, currentGradient);
+                ctx.strokeStyle = gradient;
+            } else {
+                ctx.strokeStyle = currentColor;
+            }
+            
+            ctx.beginPath();
+            
+            switch (currentTool) {
+                case 'line':
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    break;
+                case 'rectangle':
+                    ctx.rect(x1, y1, x2 - x1, y2 - y1);
+                    break;
+                case 'circle':
+                    const radius = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    ctx.arc(x1, y1, radius, 0, 2 * Math.PI);
+                    break;
+                case 'triangle':
+                    const midX = (x1 + x2) / 2;
+                    ctx.moveTo(midX, y1);
+                    ctx.lineTo(x1, y2);
+                    ctx.lineTo(x2, y2);
+                    ctx.closePath();
+                    break;
+                case 'arrow':
+                    drawArrow(x1, y1, x2, y2);
+                    break;
+                case 'star':
+                    drawStar(x1, y1, Math.abs(x2 - x1));
+                    break;
+            }
+            
+            ctx.stroke();
+        }
+
+        function drawArrow(x1, y1, x2, y2) {
+            const headLength = 20;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            
+            ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6),
+                      y2 - headLength * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6),
+                      y2 - headLength * Math.sin(angle + Math.PI / 6));
+        }
+
+        function drawStar(centerX, centerY, radius) {
+            const spikes = 5;
+            const outerRadius = radius;
+            const innerRadius = radius * 0.4;
+            
+            let rot = Math.PI / 2 * 3;
+            let x = centerX;
+            let y = centerY;
+            const step = Math.PI / spikes;
+            
+            ctx.moveTo(centerX, centerY - outerRadius);
+            for (let i = 0; i < spikes; i++) {
+                x = centerX + Math.cos(rot) * outerRadius;
+                y = centerY + Math.sin(rot) * outerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+                
+                x = centerX + Math.cos(rot) * innerRadius;
+                y = centerY + Math.sin(rot) * innerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+            }
+            ctx.lineTo(centerX, centerY - outerRadius);
+            ctx.closePath();
+        }
+
+        function applyGradient(gradient, gradientString) {
+            if (gradientString.includes('linear-gradient')) {
+                const colors = gradientString.match(/#[0-9a-fA-F]{6}/g) || 
+                             gradientString.match(/rgb\([^)]+\)/g) || 
+                             ['#ff0000', '#ffff00'];
+                colors.forEach((color, index) => {
+                    gradient.addColorStop(index / (colors.length - 1), color);
+                });
+            }
         }
 
         function drawRemotePath(data) {
-            ctx.lineWidth = data.size;
-            ctx.strokeStyle = data.tool === 'eraser' ? '#FFFFFF' : data.color;
-            ctx.globalCompositeOperation = data.tool === 'eraser' ? 'destination-out' : 'source-over';
-            
-            if (data.tool === 'brush' || data.tool === 'eraser') {
-                if (data.drawing) {
-                    ctx.lineTo(data.x, data.y);
-                    ctx.stroke();
+            if (data.drawing && (data.tool === 'brush' || data.tool === 'eraser')) {
+                ctx.lineWidth = data.size;
+                ctx.globalCompositeOperation = data.tool === 'eraser' ? 'destination-out' : 'source-over';
+                
+                if (data.gradient && data.tool !== 'eraser') {
+                    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                    applyGradient(gradient, data.gradient);
+                    ctx.strokeStyle = gradient;
                 } else {
-                    ctx.beginPath();
-                    ctx.moveTo(data.startX, data.startY);
+                    ctx.strokeStyle = data.tool === 'eraser' ? '#FFFFFF' : data.color;
                 }
+                
+                ctx.lineTo(data.x, data.y);
+                ctx.stroke();
             } else if (!data.drawing) {
-                if (data.tool === 'line') {
-                    ctx.beginPath();
-                    ctx.moveTo(data.startX, data.startY);
-                    ctx.lineTo(data.x, data.y);
-                    ctx.stroke();
-                } else if (data.tool === 'rectangle') {
-                    ctx.beginPath();
-                    ctx.rect(data.startX, data.startY, data.x - data.startX, data.y - data.startY);
-                    ctx.stroke();
-                } else if (data.tool === 'circle') {
-                    const radius = Math.sqrt(Math.pow(data.x - data.startX, 2) + Math.pow(data.y - data.startY, 2));
-                    ctx.beginPath();
-                    ctx.arc(data.startX, data.startY, radius, 0, 2 * Math.PI);
-                    ctx.stroke();
+                ctx.lineWidth = data.size;
+                ctx.globalCompositeOperation = 'source-over';
+                
+                if (data.gradient) {
+                    const gradient = ctx.createLinearGradient(data.startX, data.startY, data.x, data.y);
+                    applyGradient(gradient, data.gradient);
+                    ctx.strokeStyle = gradient;
+                } else {
+                    ctx.strokeStyle = data.color;
                 }
+                
+                drawShape(data.startX, data.startY, data.x, data.y);
             }
             
-            saveToLocalStorage();
+            saveCanvasState();
+            saveToStorage();
         }
 
         function clearCanvas() {
@@ -1099,8 +1799,38 @@
                 sendMessage({ type: 'canvas-clear' });
             }
             
-            saveToLocalStorage();
+            saveCanvasState();
+            saveToStorage();
             showAlert('Canvas cleared!', 'info');
+        }
+
+        function saveCanvasState() {
+            historyIndex++;
+            if (historyIndex < canvasHistory.length) {
+                canvasHistory.length = historyIndex;
+            }
+            canvasHistory.push(canvas.toDataURL());
+            
+            if (canvasHistory.length > 50) {
+                canvasHistory.shift();
+                historyIndex--;
+            }
+        }
+
+        function undoCanvas() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                loadCanvasFromDataURL(canvasHistory[historyIndex]);
+                showAlert('Undo applied', 'info');
+            }
+        }
+
+        function redoCanvas() {
+            if (historyIndex < canvasHistory.length - 1) {
+                historyIndex++;
+                loadCanvasFromDataURL(canvasHistory[historyIndex]);
+                showAlert('Redo applied', 'info');
+            }
         }
 
         function loadCanvasFromDataURL(dataURL) {
@@ -1108,48 +1838,37 @@
             img.onload = function() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0);
-                saveToLocalStorage();
+                saveToStorage();
             };
             img.src = dataURL;
         }
 
         // Storage functions
-        function saveToLocalStorage() {
+        function saveToStorage() {
             try {
                 const data = {
                     document: {
                         title: document.getElementById('documentTitle').value,
-                        content: document.getElementById('documentEditor').value
+                        content: document.getElementById('documentEditor').innerHTML
                     },
                     canvas: canvas ? canvas.toDataURL() : null,
                     timestamp: Date.now()
                 };
                 
-                // Store with size limit check
-                const dataString = JSON.stringify(data);
-                if (dataString.length > 5000000) { // 5MB limit
-                    showAlert('Data too large to save locally. Consider downloading files.', 'warning');
-                    return;
-                }
-                
-                // Use in-memory storage instead of localStorage
                 window.collaborationData = data;
-                
             } catch (error) {
                 console.error('Error saving to storage:', error);
-                showAlert('Failed to save data locally.', 'error');
             }
         }
 
-        function loadFromLocalStorage() {
+        function loadFromStorage() {
             try {
-                // Load from in-memory storage
                 const data = window.collaborationData;
                 
                 if (data) {
                     if (data.document) {
                         document.getElementById('documentTitle').value = data.document.title || '';
-                        document.getElementById('documentEditor').value = data.document.content || '';
+                        document.getElementById('documentEditor').innerHTML = data.document.content || '';
                     }
                     
                     if (data.canvas && canvas) {
@@ -1166,7 +1885,7 @@
             try {
                 const data = {
                     title: document.getElementById('documentTitle').value,
-                    content: document.getElementById('documentEditor').value,
+                    content: document.getElementById('documentEditor').innerHTML,
                     timestamp: Date.now(),
                     type: 'document'
                 };
@@ -1180,13 +1899,15 @@
 
         function downloadDocument() {
             const title = document.getElementById('documentTitle').value || 'Untitled Document';
-            const content = document.getElementById('documentEditor').value;
+            const content = document.getElementById('documentEditor').innerHTML;
             
-            const blob = new Blob([content], { type: 'text/plain' });
+            const htmlContent = `<!DOCTYPE html><html><head><title>${sanitizeInput(title)}</title></head><body>${content}</body></html>`;
+            
+            const blob = new Blob([htmlContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${sanitizeInput(title)}.txt`;
+            a.download = `${sanitizeInput(title)}.html`;
             a.click();
             URL.revokeObjectURL(url);
             
@@ -1201,7 +1922,7 @@
             const file = document.getElementById('docFile').files[0];
             if (!file) return;
             
-            if (file.size > 10000000) { // 10MB limit
+            if (file.size > 10000000) {
                 showAlert('File too large. Maximum size is 10MB.', 'error');
                 return;
             }
@@ -1212,18 +1933,20 @@
                     let content = e.target.result;
                     let title = file.name.replace(/\.[^/.]+$/, "");
                     
-                    if (file.name.endsWith('.json')) {
-                        const data = validateJSON(content);
-                        if (data && data.content) {
-                            content = data.content;
-                            title = data.title || title;
-                        }
+                    if (file.name.endsWith('.html')) {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(content, 'text/html');
+                        const titleElement = doc.querySelector('title');
+                        const bodyElement = doc.querySelector('body');
+                        
+                        if (titleElement) title = titleElement.textContent;
+                        if (bodyElement) content = bodyElement.innerHTML;
                     }
                     
                     document.getElementById('documentTitle').value = sanitizeInput(title);
-                    document.getElementById('documentEditor').value = sanitizeInput(content);
+                    document.getElementById('documentEditor').innerHTML = content;
                     
-                    saveToLocalStorage();
+                    saveToStorage();
                     
                     if (isConnected) {
                         sendMessage({
@@ -1277,7 +2000,7 @@
             const file = document.getElementById('canvasFile').files[0];
             if (!file) return;
             
-            if (file.size > 20000000) { // 20MB limit
+            if (file.size > 20000000) {
                 showAlert('File too large. Maximum size is 20MB.', 'error');
                 return;
             }
@@ -1337,9 +2060,12 @@
         // Handle visibility change to save data
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                saveToLocalStorage();
+                saveToStorage();
             }
         });
+
+        // Auto-save every 30 seconds
+        setInterval(saveToStorage, 30000);
     </script>
 </body>
 </html>
