@@ -1,1 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Workspace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .connection-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #fa709a, #fee140);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .token-display {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.connecting {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .document-editor {
+            width: 100%;
+            min-height: 300px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+        }
+
+        .canvas-container {
+            position: relative;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        #drawingCanvas {
+            cursor: crosshair;
+            display: block;
+        }
+
+        .drawing-tools {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .color-picker {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .brush-size {
+            width: 60px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.success {
+            background: #28a745;
+        }
+
+        .alert.error {
+            background: #dc3545;
+        }
+
+        .alert.warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .alert.info {
+            background: #17a2b8;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-upload input[type=file] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .download-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .drawing-tools {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Collaborative Workspace</h1>
+            <p>Real-time document editing and whiteboard collaboration using WebRTC</p>
+        </div>
+
+        <div class="connection-section">
+            <h2>Connection Setup</h2>
+            <div class="input-group">
+                <label for="roomId">Room ID:</label>
+                <input type="text" id="roomId" placeholder="Enter room ID" maxlength="50">
+            </div>
+            <div class="input-group">
+                <label for="username">Your Name:</label>
+                <input type="text" id="username" placeholder="Enter your name" maxlength="30">
+            </div>
+            <button class="btn" onclick="createRoom()">Create Room</button>
+            <button class="btn btn-secondary" onclick="joinRoom()">Join Room</button>
+            <div id="connectionStatus" class="status disconnected">Disconnected</div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Document Collaboration</h2>
+                <div class="input-group">
+                    <label for="documentContent">Shared Document:</label>
+                    <textarea id="documentContent" class="document-editor" placeholder="Start typing your document here..."></textarea>
+                </div>
+                <div class="download-section">
+                    <button class="btn btn-success" onclick="downloadDocument()">Download Document</button>
+                    <button class="btn btn-warning" onclick="clearDocument()">Clear Document</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Whiteboard Collaboration</h2>
+                <div class="drawing-tools">
+                    <div class="tool-group">
+                        <label>Tool:</label>
+                        <select id="drawingTool">
+                            <option value="brush">Brush</option>
+                            <option value="eraser">Eraser</option>
+                            <option value="rectangle">Rectangle</option>
+                            <option value="circle">Circle</option>
+                            <option value="line">Line</option>
+                        </select>
+                    </div>
+                    <div class="tool-group">
+                        <label>Color:</label>
+                        <input type="color" id="drawingColor" class="color-picker" value="#000000">
+                    </div>
+                    <div class="tool-group">
+                        <label>Size:</label>
+                        <input type="range" id="brushSize" class="brush-size" min="1" max="50" value="5">
+                        <span id="brushSizeValue">5</span>
+                    </div>
+                    <button class="btn btn-warning" onclick="clearCanvas()">Clear Canvas</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="drawingCanvas" width="500" height="400"></canvas>
+                </div>
+                <div class="download-section">
+                    <button class="btn btn-success" onclick="downloadCanvas()">Download Canvas</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Token Management</h2>
+            <div class="input-group">
+                <label>Generated Token:</label>
+                <div id="tokenDisplay" class="token-display hidden"></div>
+                <button class="btn" onclick="generateToken()">Generate Token</button>
+                <button class="btn btn-secondary" onclick="copyToken()">Copy Token</button>
+                <button class="btn btn-warning" onclick="downloadToken()">Download Token File</button>
+            </div>
+            <div class="input-group">
+                <label for="tokenInput">Enter Token:</label>
+                <textarea id="tokenInput" placeholder="Paste token here or upload token file" rows="3"></textarea>
+                <div class="file-upload">
+                    <button class="btn btn-secondary">Upload Token File</button>
+                    <input type="file" id="tokenFile" accept=".json" onchange="handleTokenFileUpload(event)">
+                </div>
+                <button class="btn btn-success" onclick="connectWithToken()">Connect with Token</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebRTC Configuration
+        const configuration = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
+
+        // Global variables
+        let peerConnection = null;
+        let dataChannel = null;
+        let localStream = null;
+        let isHost = false;
+        let roomId = '';
+        let username = '';
+        let connectionToken = null;
+
+        // Canvas variables
+        let canvas = null;
+        let ctx = null;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentTool = 'brush';
+        let currentColor = '#000000';
+        let currentSize = 5;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCanvas();
+            loadFromLocalStorage();
+            setupEventListeners();
+        });
+
+        function initializeCanvas() {
+            canvas = document.getElementById('drawingCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            setupCanvasEventListeners();
+        }
+
+        function setupCanvasEventListeners() {
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            // Tool change events
+            document.getElementById('drawingTool').addEventListener('change', function(e) {
+                currentTool = e.target.value;
+            });
+
+            document.getElementById('drawingColor').addEventListener('change', function(e) {
+                currentColor = e.target.value;
+            });
+
+            document.getElementById('brushSize').addEventListener('input', function(e) {
+                currentSize = parseInt(e.target.value);
+                document.getElementById('brushSizeValue').textContent = currentSize;
+            });
+        }
+
+        function setupEventListeners() {
+            // Auto-save document changes
+            document.getElementById('documentContent').addEventListener('input', function() {
+                saveToLocalStorage();
+                if (dataChannel && dataChannel.readyState === 'open') {
+                    sendMessage({
+                        type: 'document-update',
+                        content: this.value,
+                        timestamp: Date.now()
+                    });
+                }
+            });
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            if (e.type === 'touchstart') {
+                startDrawing({ clientX: x, clientY: y });
+            } else if (e.type === 'touchmove') {
+                draw({ clientX: x, clientY: y });
+            }
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineWidth = currentSize;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentColor;
+
+            switch (currentTool) {
+                case 'brush':
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    break;
+                case 'eraser':
+                    ctx.strokeStyle = 'white';
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    break;
+                case 'rectangle':
+                    ctx.clearRect(lastX, lastY, x - lastX, y - lastY);
+                    ctx.strokeRect(lastX, lastY, x - lastX, y - lastY);
+                    break;
+                case 'circle':
+                    const radius = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+                    ctx.beginPath();
+                    ctx.arc(lastX, lastY, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    break;
+                case 'line':
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    break;
+            }
+
+            // Send drawing data to peer
+            if (dataChannel && dataChannel.readyState === 'open') {
+                sendMessage({
+                    type: 'drawing',
+                    tool: currentTool,
+                    color: currentColor,
+                    size: currentSize,
+                    fromX: lastX,
+                    fromY: lastY,
+                    toX: x,
+                    toY: y,
+                    timestamp: Date.now()
+                });
+            }
+
+            lastX = x;
+            lastY = y;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear the canvas?')) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                if (dataChannel && dataChannel.readyState === 'open') {
+                    sendMessage({
+                        type: 'clear-canvas',
+                        timestamp: Date.now()
+                    });
+                }
+                
+                saveCanvasToLocalStorage();
+            }
+        }
+
+        // WebRTC Functions
+        async function createRoom() {
+            const roomIdInput = document.getElementById('roomId').value.trim();
+            const usernameInput = document.getElementById('username').value.trim();
+
+            if (!roomIdInput || !usernameInput) {
+                showAlert('Please enter both room ID and username', 'error');
+                return;
+            }
+
+            if (!isValidInput(roomIdInput) || !isValidInput(usernameInput)) {
+                showAlert('Invalid characters detected', 'error');
+                return;
+            }
+
+            roomId = roomIdInput;
+            username = usernameInput;
+            isHost = true;
+
+            try {
+                peerConnection = new RTCPeerConnection(configuration);
+                setupPeerConnectionHandlers();
+
+                dataChannel = peerConnection.createDataChannel('collaboration');
+                setupDataChannelHandlers(dataChannel);
+
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                connectionToken = {
+                    type: 'offer',
+                    sdp: offer.sdp,
+                    roomId: roomId,
+                    username: username,
+                    timestamp: Date.now()
+                };
+
+                displayToken();
+                updateConnectionStatus('Waiting for peer to join...', 'connecting');
+                showAlert('Room created! Share the token with others to join.', 'success');
+
+            } catch (error) {
+                console.error('Error creating room:', error);
+                showAlert('Failed to create room: ' + error.message, 'error');
+            }
+        }
+
+        async function joinRoom() {
+            const roomIdInput = document.getElementById('roomId').value.trim();
+            const usernameInput = document.getElementById('username').value.trim();
+
+            if (!roomIdInput || !usernameInput) {
+                showAlert('Please enter both room ID and username', 'error');
+                return;
+            }
+
+            if (!isValidInput(roomIdInput) || !isValidInput(usernameInput)) {
+                showAlert('Invalid characters detected', 'error');
+                return;
+            }
+
+            roomId = roomIdInput;
+            username = usernameInput;
+            isHost = false;
+
+            try {
+                peerConnection = new RTCPeerConnection(configuration);
+                setupPeerConnectionHandlers();
+
+                peerConnection.ondatachannel = function(event) {
+                    dataChannel = event.channel;
+                    setupDataChannelHandlers(dataChannel);
+                };
+
+                updateConnectionStatus('Waiting for connection...', 'connecting');
+                showAlert('Waiting for room owner to share token...', 'info');
+
+            } catch (error) {
+                console.error('Error joining room:', error);
+                showAlert('Failed to join room: ' + error.message, 'error');
+            }
+        }
+
+        function setupPeerConnectionHandlers() {
+            peerConnection.onicecandidate = function(event) {
+                if (event.candidate) {
+                    // Send ICE candidate to peer
+                    if (dataChannel && dataChannel.readyState === 'open') {
+                        sendMessage({
+                            type: 'ice-candidate',
+                            candidate: event.candidate,
+                            timestamp: Date.now()
+                        });
+                    }
+                }
+            };
+
+            peerConnection.onconnectionstatechange = function() {
+                console.log('Connection state:', peerConnection.connectionState);
+                if (peerConnection.connectionState === 'connected') {
+                    updateConnectionStatus('Connected', 'connected');
+                    showAlert('Successfully connected!', 'success');
+                } else if (peerConnection.connectionState === 'disconnected') {
+                    updateConnectionStatus('Disconnected', 'disconnected');
+                    showAlert('Connection lost', 'warning');
+                }
+            };
+        }
+
+        function setupDataChannelHandlers(channel) {
+            channel.onopen = function() {
+                console.log('Data channel opened');
+                updateConnectionStatus('Connected', 'connected');
+                showAlert('Data channel opened!', 'success');
+            };
+
+            channel.onclose = function() {
+                console.log('Data channel closed');
+                updateConnectionStatus('Disconnected', 'disconnected');
+                showAlert('Data channel closed', 'warning');
+            };
+
+            channel.onmessage = function(event) {
+                try {
+                    const message = JSON.parse(event.data);
+                    handleIncomingMessage(message);
+                } catch (error) {
+                    console.error('Error parsing message:', error);
+                }
+            };
+        }
+
+        function handleIncomingMessage(message) {
+            switch (message.type) {
+                case 'document-update':
+                    if (message.timestamp > getLastDocumentTimestamp()) {
+                        document.getElementById('documentContent').value = message.content;
+                        saveToLocalStorage();
+                    }
+                    break;
+                case 'drawing':
+                    drawRemote(message);
+                    break;
+                case 'clear-canvas':
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    saveCanvasToLocalStorage();
+                    break;
+                case 'ice-candidate':
+                    if (peerConnection) {
+                        peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+                    }
+                    break;
+                case 'answer':
+                    if (peerConnection) {
+                        peerConnection.setRemoteDescription(new RTCSessionDescription(message));
+                    }
+                    break;
+                case 'offer':
+                    handleOffer(message);
+                    break;
+            }
+        }
+
+        async function handleOffer(offer) {
+            try {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+
+                connectionToken = {
+                    type: 'answer',
+                    sdp: answer.sdp,
+                    roomId: roomId,
+                    username: username,
+                    timestamp: Date.now()
+                };
+
+                displayToken();
+                showAlert('Offer received! Share the answer token with the host.', 'success');
+
+            } catch (error) {
+                console.error('Error handling offer:', error);
+                showAlert('Failed to handle offer: ' + error.message, 'error');
+            }
+        }
+
+        function drawRemote(message) {
+            ctx.lineWidth = message.size;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = message.color;
+
+            switch (message.tool) {
+                case 'brush':
+                    ctx.beginPath();
+                    ctx.moveTo(message.fromX, message.fromY);
+                    ctx.lineTo(message.toX, message.toY);
+                    ctx.stroke();
+                    break;
+                case 'eraser':
+                    ctx.strokeStyle = 'white';
+                    ctx.beginPath();
+                    ctx.moveTo(message.fromX, message.fromY);
+                    ctx.lineTo(message.toX, message.toY);
+                    ctx.stroke();
+                    break;
+                case 'rectangle':
+                    ctx.strokeRect(message.fromX, message.fromY, message.toX - message.fromX, message.toY - message.fromY);
+                    break;
+                case 'circle':
+                    const radius = Math.sqrt(Math.pow(message.toX - message.fromX, 2) + Math.pow(message.toY - message.fromY, 2));
+                    ctx.beginPath();
+                    ctx.arc(message.fromX, message.fromY, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    break;
+                case 'line':
+                    ctx.beginPath();
+                    ctx.moveTo(message.fromX, message.fromY);
+                    ctx.lineTo(message.toX, message.toY);
+                    ctx.stroke();
+                    break;
+            }
+        }
+
+        function sendMessage(message) {
+            if (dataChannel && dataChannel.readyState === 'open') {
+                dataChannel.send(JSON.stringify(message));
+            }
+        }
+
+        // Token Management
+        function generateToken() {
+            if (!connectionToken) {
+                showAlert('No connection token available. Create or join a room first.', 'warning');
+                return;
+            }
+            displayToken();
+        }
+
+        function displayToken() {
+            const tokenDisplay = document.getElementById('tokenDisplay');
+            tokenDisplay.textContent = JSON.stringify(connectionToken, null, 2);
+            tokenDisplay.classList.remove('hidden');
+        }
+
+        function copyToken() {
+            if (!connectionToken) {
+                showAlert('No token to copy', 'warning');
+                return;
+            }
+
+            const tokenText = JSON.stringify(connectionToken, null, 2);
+            navigator.clipboard.writeText(tokenText).then(function() {
+                showAlert('Token copied to clipboard!', 'success');
+            }).catch(function() {
+                showAlert('Failed to copy token', 'error');
+            });
+        }
+
+        function downloadToken() {
+            if (!connectionToken) {
+                showAlert('No token to download', 'warning');
+                return;
+            }
+
+            const tokenBlob = new Blob([JSON.stringify(connectionToken, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(tokenBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `connection-token-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showAlert('Token file downloaded!', 'success');
+        }
+
+        function handleTokenFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) { // 1MB limit
+                showAlert('File too large. Please select a smaller file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const token = JSON.parse(e.target.result);
+                    document.getElementById('tokenInput').value = JSON.stringify(token, null, 2);
+                    showAlert('Token file loaded successfully!', 'success');
+                } catch (error) {
+                    showAlert('Invalid token file format', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function connectWithToken() {
+            const tokenInput = document.getElementById('tokenInput').value.trim();
+            if (!tokenInput) {
+                showAlert('Please enter a token', 'warning');
+                return;
+            }
+
+            try {
+                const token = JSON.parse(tokenInput);
+                
+                if (!token.type || !token.sdp || !token.roomId || !token.username) {
+                    showAlert('Invalid token format', 'error');
+                    return;
+                }
+
+                if (!isValidInput(token.roomId) || !isValidInput(token.username)) {
+                    showAlert('Invalid characters in token', 'error');
+                    return;
+                }
+
+                roomId = token.roomId;
+                username = token.username;
+
+                if (!peerConnection) {
+                    peerConnection = new RTCPeerConnection(configuration);
+                    setupPeerConnectionHandlers();
+
+                    if (token.type === 'offer') {
+                        // Joining as peer
+                        peerConnection.ondatachannel = function(event) {
+                            dataChannel = event.channel;
+                            setupDataChannelHandlers(dataChannel);
+                        };
+                    } else {
+                        // Host receiving answer
+                        dataChannel = peerConnection.createDataChannel('collaboration');
+                        setupDataChannelHandlers(dataChannel);
+                    }
+                }
+
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(token));
+
+                if (token.type === 'offer') {
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
+
+                    connectionToken = {
+                        type: 'answer',
+                        sdp: answer.sdp,
+                        roomId: roomId,
+                        username: username,
+                        timestamp: Date.now()
+                    };
+                }
+
+                updateConnectionStatus('Connecting...', 'connecting');
+                showAlert('Token processed successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error connecting with token:', error);
+                showAlert('Failed to connect with token: ' + error.message, 'error');
+            }
+        }
+
+        // File Operations
+        function downloadDocument() {
+            const content = document.getElementById('documentContent').value;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `document-${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showAlert('Document downloaded!', 'success');
+        }
+
+        function downloadCanvas() {
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `canvas-${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showAlert('Canvas downloaded!', 'success');
+        }
+
+        function clearDocument() {
+            if (confirm('Are you sure you want to clear the document?')) {
+                document.getElementById('documentContent').value = '';
+                saveToLocalStorage();
+                
+                if (dataChannel && dataChannel.readyState === 'open') {
+                    sendMessage({
+                        type: 'document-update',
+                        content: '',
+                        timestamp: Date.now()
+                    });
+                }
+            }
+        }
+
+        // Local Storage
+        function saveToLocalStorage() {
+            const content = document.getElementById('documentContent').value;
+            localStorage.setItem('collaborative-document', content);
+        }
+
+        function loadFromLocalStorage() {
+            const content = localStorage.getItem('collaborative-document');
+            if (content) {
+                document.getElementById('documentContent').value = content;
+            }
+        }
+
+        function saveCanvasToLocalStorage() {
+            const imageData = canvas.toDataURL('image/png');
+            localStorage.setItem('collaborative-canvas', imageData);
+        }
+
+        function loadCanvasFromLocalStorage() {
+            const imageData = localStorage.getItem('collaborative-canvas');
+            if (imageData) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = imageData;
+            }
+        }
+
+        function getLastDocumentTimestamp() {
+            return parseInt(localStorage.getItem('last-document-timestamp') || '0');
+        }
+
+        // Utility Functions
+        function updateConnectionStatus(message, type) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function isValidInput(input) {
+            // Basic XSS and injection prevention
+            const dangerousPatterns = /[<>\"'&]/;
+            return !dangerousPatterns.test(input) && input.length <= 1000;
+        }
+
+        // Load canvas from localStorage on page load
+        window.addEventListener('load', function() {
+            loadCanvasFromLocalStorage();
+        });
+
+        // Auto-save canvas periodically
+        setInterval(saveCanvasToLocalStorage, 5000);
+    </script>
+</body>
+</html>
 
