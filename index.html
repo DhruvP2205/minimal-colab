@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -41,39 +41,32 @@
             opacity: 0.9;
         }
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-
         .connection-section {
             background: white;
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             margin-bottom: 30px;
+        }
+
+        .connection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .connection-panel {
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .connection-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
         }
 
         .btn {
@@ -112,6 +105,10 @@
             background: linear-gradient(45deg, #fa709a, #fee140);
         }
 
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        }
+
         .input-group {
             margin-bottom: 15px;
         }
@@ -146,6 +143,8 @@
             word-break: break-all;
             font-family: monospace;
             font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .status {
@@ -173,34 +172,163 @@
             border: 1px solid #ffeaa7;
         }
 
-        .document-editor {
-            width: 100%;
-            min-height: 300px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 1rem;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            resize: vertical;
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
         }
 
-        .canvas-container {
+        .file-upload input[type=file] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* Tab System */
+        .tab-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .tab-header {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 15px 15px 0 0;
+            overflow: hidden;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 25px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .expand-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .expand-button:hover {
+            background: #5a6fd8;
+            transform: scale(1.1);
+        }
+
+        /* Document Editor */
+        .document-editor-container {
             position: relative;
             border: 2px solid #e1e5e9;
             border-radius: 8px;
             overflow: hidden;
-            background: white;
         }
 
-        #drawingCanvas {
-            cursor: crosshair;
-            display: block;
-        }
-
-        .drawing-tools {
+        .document-toolbar {
+            background: #f8f9fa;
+            padding: 10px;
+            border-bottom: 1px solid #e1e5e9;
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-button {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-button:hover {
+            background: #e9ecef;
+        }
+
+        .toolbar-button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .document-editor {
+            width: 100%;
+            min-height: 500px;
+            border: none;
+            padding: 20px;
+            font-size: 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        /* Whiteboard */
+        .whiteboard-container {
+            position: relative;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .drawing-toolbar {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            gap: 15px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -208,7 +336,7 @@
         .tool-group {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .color-picker {
@@ -217,10 +345,23 @@
             border: none;
             border-radius: 50%;
             cursor: pointer;
+            border: 2px solid #dee2e6;
         }
 
         .brush-size {
-            width: 60px;
+            width: 80px;
+        }
+
+        .canvas-container {
+            position: relative;
+            background: white;
+            overflow: hidden;
+        }
+
+        #drawingCanvas {
+            cursor: crosshair;
+            display: block;
+            border: 1px solid #dee2e6;
         }
 
         .hidden {
@@ -267,20 +408,6 @@
             }
         }
 
-        .file-upload {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-        }
-
-        .file-upload input[type=file] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
         .download-section {
             margin-top: 20px;
             padding-top: 20px;
@@ -288,11 +415,16 @@
         }
 
         @media (max-width: 768px) {
-            .main-content {
+            .connection-grid {
                 grid-template-columns: 1fr;
             }
             
-            .drawing-tools {
+            .drawing-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .document-toolbar {
                 flex-direction: column;
                 align-items: stretch;
             }
@@ -302,88 +434,167 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Collaborative Workspace</h1>
+            <h1>🤝 Collaborative Workspace</h1>
             <p>Real-time document editing and whiteboard collaboration using WebRTC</p>
         </div>
 
         <div class="connection-section">
-            <h2>Connection Setup</h2>
-            <div class="input-group">
-                <label for="roomId">Room ID:</label>
-                <input type="text" id="roomId" placeholder="Enter room ID" maxlength="50">
+            <h2>🔗 Connection Setup</h2>
+            <div class="connection-grid">
+                <div class="connection-panel">
+                    <h3>📝 Create Room</h3>
+                    <div class="input-group">
+                        <label for="roomId">Room ID:</label>
+                        <input type="text" id="roomId" placeholder="Enter room ID" maxlength="50">
+                    </div>
+                    <div class="input-group">
+                        <label for="username">Your Name:</label>
+                        <input type="text" id="username" placeholder="Enter your name" maxlength="30">
+                    </div>
+                    <button class="btn" onclick="createRoom()">Create Room</button>
+                    <div id="connectionStatus" class="status disconnected">Disconnected</div>
+                </div>
+
+                <div class="connection-panel">
+                    <h3>🔑 Token Management</h3>
+                    <div class="input-group">
+                        <label>Generated Token:</label>
+                        <div id="tokenDisplay" class="token-display hidden"></div>
+                        <button class="btn" onclick="generateToken()">Generate Token</button>
+                        <button class="btn btn-secondary" onclick="copyToken()">Copy Token</button>
+                        <button class="btn btn-warning" onclick="downloadToken()">Download Token File</button>
+                    </div>
+                </div>
             </div>
-            <div class="input-group">
-                <label for="username">Your Name:</label>
-                <input type="text" id="username" placeholder="Enter your name" maxlength="30">
+
+            <div class="connection-grid" style="margin-top: 20px;">
+                <div class="connection-panel">
+                    <h3>🚪 Join Room</h3>
+                    <div class="input-group">
+                        <label for="joinUsername">Your Name:</label>
+                        <input type="text" id="joinUsername" placeholder="Enter your name" maxlength="30">
+                    </div>
+                    <div class="input-group">
+                        <label for="tokenInput">Enter Token:</label>
+                        <textarea id="tokenInput" placeholder="Paste token here or upload token file" rows="3"></textarea>
+                        <div class="file-upload">
+                            <button class="btn btn-secondary">Upload Token File</button>
+                            <input type="file" id="tokenFile" accept=".json" onchange="handleTokenFileUpload(event)">
+                        </div>
+                        <button class="btn btn-success" onclick="joinRoom()">Join Room</button>
+                    </div>
+                </div>
+
+                <div class="connection-panel">
+                    <h3>📤 Response Token</h3>
+                    <div class="input-group">
+                        <label>Response Token:</label>
+                        <div id="responseTokenDisplay" class="token-display hidden"></div>
+                        <button class="btn" onclick="generateResponseToken()">Generate Response</button>
+                        <button class="btn btn-secondary" onclick="copyResponseToken()">Copy Response</button>
+                        <button class="btn btn-warning" onclick="downloadResponseToken()">Download Response</button>
+                    </div>
+                    <div class="input-group">
+                        <label for="responseTokenInput">Enter Response Token:</label>
+                        <textarea id="responseTokenInput" placeholder="Paste response token here" rows="3"></textarea>
+                        <div class="file-upload">
+                            <button class="btn btn-secondary">Upload Response File</button>
+                            <input type="file" id="responseTokenFile" accept=".json" onchange="handleResponseTokenFileUpload(event)">
+                        </div>
+                        <button class="btn btn-success" onclick="connectWithResponseToken()">Connect</button>
+                    </div>
+                </div>
             </div>
-            <button class="btn" onclick="createRoom()">Create Room</button>
-            <button class="btn btn-secondary" onclick="joinRoom()">Join Room</button>
-            <div id="connectionStatus" class="status disconnected">Disconnected</div>
         </div>
 
-        <div class="main-content">
-            <div class="card">
-                <h2>Document Collaboration</h2>
-                <div class="input-group">
-                    <label for="documentContent">Shared Document:</label>
-                    <textarea id="documentContent" class="document-editor" placeholder="Start typing your document here..."></textarea>
-                </div>
-                <div class="download-section">
-                    <button class="btn btn-success" onclick="downloadDocument()">Download Document</button>
-                    <button class="btn btn-warning" onclick="clearDocument()">Clear Document</button>
+        <div class="tab-container">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="switchTab('document')">📄 Document Editor</button>
+                <button class="tab-button" onclick="switchTab('whiteboard')">🎨 Whiteboard</button>
+            </div>
+
+            <div id="document-tab" class="tab-content active">
+                <div class="document-editor-container">
+                    <button class="expand-button" onclick="expandWindow('document')" title="Open in new window">⤢</button>
+                    <div class="document-toolbar">
+                        <div class="toolbar-group">
+                            <button class="toolbar-button" onclick="formatText('bold')" title="Bold">B</button>
+                            <button class="toolbar-button" onclick="formatText('italic')" title="Italic">I</button>
+                            <button class="toolbar-button" onclick="formatText('underline')" title="Underline">U</button>
+                        </div>
+                        <div class="toolbar-group">
+                            <select id="fontFamily" onchange="changeFont()">
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                            <select id="fontSize" onchange="changeFontSize()">
+                                <option value="12">12</option>
+                                <option value="14">14</option>
+                                <option value="16" selected>16</option>
+                                <option value="18">18</option>
+                                <option value="20">20</option>
+                                <option value="24">24</option>
+                                <option value="28">28</option>
+                                <option value="32">32</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-group">
+                            <button class="toolbar-button" onclick="alignText('left')" title="Align Left">⫷</button>
+                            <button class="toolbar-button" onclick="alignText('center')" title="Align Center">⫸</button>
+                            <button class="toolbar-button" onclick="alignText('right')" title="Align Right">⫹</button>
+                            <button class="toolbar-button" onclick="alignText('justify')" title="Justify">⫺</button>
+                        </div>
+                        <div class="toolbar-group">
+                            <button class="toolbar-button" onclick="addBulletList()" title="Bullet List">•</button>
+                            <button class="toolbar-button" onclick="addNumberedList()" title="Numbered List">1.</button>
+                            <button class="toolbar-button" onclick="indentText()" title="Indent">→</button>
+                            <button class="toolbar-button" onclick="outdentText()" title="Outdent">←</button>
+                        </div>
+                        <div class="toolbar-group">
+                            <button class="btn btn-success" onclick="downloadDocument()">Download</button>
+                            <button class="btn btn-warning" onclick="clearDocument()">Clear</button>
+                        </div>
+                    </div>
+                    <div id="documentEditor" class="document-editor" contenteditable="true" placeholder="Start typing your document here..."></div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Whiteboard Collaboration</h2>
-                <div class="drawing-tools">
-                    <div class="tool-group">
-                        <label>Tool:</label>
-                        <select id="drawingTool">
-                            <option value="brush">Brush</option>
-                            <option value="eraser">Eraser</option>
-                            <option value="rectangle">Rectangle</option>
-                            <option value="circle">Circle</option>
-                            <option value="line">Line</option>
-                        </select>
+            <div id="whiteboard-tab" class="tab-content">
+                <div class="whiteboard-container">
+                    <button class="expand-button" onclick="expandWindow('whiteboard')" title="Open in new window">⤢</button>
+                    <div class="drawing-toolbar">
+                        <div class="tool-group">
+                            <label>Tool:</label>
+                            <select id="drawingTool">
+                                <option value="brush">Brush</option>
+                                <option value="eraser">Eraser</option>
+                                <option value="rectangle">Rectangle</option>
+                                <option value="circle">Circle</option>
+                                <option value="line">Line</option>
+                                <option value="text">Text</option>
+                            </select>
+                        </div>
+                        <div class="tool-group">
+                            <label>Color:</label>
+                            <input type="color" id="drawingColor" class="color-picker" value="#000000">
+                        </div>
+                        <div class="tool-group">
+                            <label>Size:</label>
+                            <input type="range" id="brushSize" class="brush-size" min="1" max="50" value="5">
+                            <span id="brushSizeValue">5</span>
+                        </div>
+                        <div class="tool-group">
+                            <button class="btn btn-warning" onclick="clearCanvas()">Clear Canvas</button>
+                            <button class="btn btn-success" onclick="downloadCanvas()">Download</button>
+                        </div>
                     </div>
-                    <div class="tool-group">
-                        <label>Color:</label>
-                        <input type="color" id="drawingColor" class="color-picker" value="#000000">
+                    <div class="canvas-container">
+                        <canvas id="drawingCanvas" width="800" height="600"></canvas>
                     </div>
-                    <div class="tool-group">
-                        <label>Size:</label>
-                        <input type="range" id="brushSize" class="brush-size" min="1" max="50" value="5">
-                        <span id="brushSizeValue">5</span>
-                    </div>
-                    <button class="btn btn-warning" onclick="clearCanvas()">Clear Canvas</button>
                 </div>
-                <div class="canvas-container">
-                    <canvas id="drawingCanvas" width="500" height="400"></canvas>
-                </div>
-                <div class="download-section">
-                    <button class="btn btn-success" onclick="downloadCanvas()">Download Canvas</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Token Management</h2>
-            <div class="input-group">
-                <label>Generated Token:</label>
-                <div id="tokenDisplay" class="token-display hidden"></div>
-                <button class="btn" onclick="generateToken()">Generate Token</button>
-                <button class="btn btn-secondary" onclick="copyToken()">Copy Token</button>
-                <button class="btn btn-warning" onclick="downloadToken()">Download Token File</button>
-            </div>
-            <div class="input-group">
-                <label for="tokenInput">Enter Token:</label>
-                <textarea id="tokenInput" placeholder="Paste token here or upload token file" rows="3"></textarea>
-                <div class="file-upload">
-                    <button class="btn btn-secondary">Upload Token File</button>
-                    <input type="file" id="tokenFile" accept=".json" onchange="handleTokenFileUpload(event)">
-                </div>
-                <button class="btn btn-success" onclick="connectWithToken()">Connect with Token</button>
             </div>
         </div>
     </div>
@@ -400,11 +611,11 @@
         // Global variables
         let peerConnection = null;
         let dataChannel = null;
-        let localStream = null;
         let isHost = false;
         let roomId = '';
         let username = '';
         let connectionToken = null;
+        let responseToken = null;
 
         // Canvas variables
         let canvas = null;
@@ -462,12 +673,12 @@
 
         function setupEventListeners() {
             // Auto-save document changes
-            document.getElementById('documentContent').addEventListener('input', function() {
+            document.getElementById('documentEditor').addEventListener('input', function() {
                 saveToLocalStorage();
                 if (dataChannel && dataChannel.readyState === 'open') {
                     sendMessage({
                         type: 'document-update',
-                        content: this.value,
+                        content: this.innerHTML,
                         timestamp: Date.now()
                     });
                 }
@@ -577,6 +788,63 @@
             }
         }
 
+        // Tab System
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function expandWindow(type) {
+            const url = window.location.href + '#' + type;
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        }
+
+        // Document Editor Functions
+        function formatText(command) {
+            document.execCommand(command, false, null);
+        }
+
+        function changeFont() {
+            const font = document.getElementById('fontFamily').value;
+            document.execCommand('fontName', false, font);
+        }
+
+        function changeFontSize() {
+            const size = document.getElementById('fontSize').value;
+            document.execCommand('fontSize', false, size);
+        }
+
+        function alignText(alignment) {
+            document.execCommand('justify' + alignment.charAt(0).toUpperCase() + alignment.slice(1), false, null);
+        }
+
+        function addBulletList() {
+            document.execCommand('insertUnorderedList', false, null);
+        }
+
+        function addNumberedList() {
+            document.execCommand('insertOrderedList', false, null);
+        }
+
+        function indentText() {
+            document.execCommand('indent', false, null);
+        }
+
+        function outdentText() {
+            document.execCommand('outdent', false, null);
+        }
+
         // WebRTC Functions
         async function createRoom() {
             const roomIdInput = document.getElementById('roomId').value.trim();
@@ -625,24 +893,36 @@
         }
 
         async function joinRoom() {
-            const roomIdInput = document.getElementById('roomId').value.trim();
-            const usernameInput = document.getElementById('username').value.trim();
+            const usernameInput = document.getElementById('joinUsername').value.trim();
+            const tokenInput = document.getElementById('tokenInput').value.trim();
 
-            if (!roomIdInput || !usernameInput) {
-                showAlert('Please enter both room ID and username', 'error');
+            if (!usernameInput || !tokenInput) {
+                showAlert('Please enter username and token', 'error');
                 return;
             }
 
-            if (!isValidInput(roomIdInput) || !isValidInput(usernameInput)) {
+            if (!isValidInput(usernameInput)) {
                 showAlert('Invalid characters detected', 'error');
                 return;
             }
 
-            roomId = roomIdInput;
-            username = usernameInput;
-            isHost = false;
-
             try {
+                const token = JSON.parse(tokenInput);
+                
+                if (!token.type || !token.sdp || !token.roomId || !token.username) {
+                    showAlert('Invalid token format', 'error');
+                    return;
+                }
+
+                if (!isValidInput(token.roomId) || !isValidInput(token.username)) {
+                    showAlert('Invalid characters in token', 'error');
+                    return;
+                }
+
+                roomId = token.roomId;
+                username = usernameInput;
+                isHost = false;
+
                 peerConnection = new RTCPeerConnection(configuration);
                 setupPeerConnectionHandlers();
 
@@ -651,8 +931,22 @@
                     setupDataChannelHandlers(dataChannel);
                 };
 
-                updateConnectionStatus('Waiting for connection...', 'connecting');
-                showAlert('Waiting for room owner to share token...', 'info');
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(token));
+
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+
+                responseToken = {
+                    type: 'answer',
+                    sdp: answer.sdp,
+                    roomId: roomId,
+                    username: username,
+                    timestamp: Date.now()
+                };
+
+                displayResponseToken();
+                updateConnectionStatus('Waiting for host to accept...', 'connecting');
+                showAlert('Response token generated! Share it with the host.', 'success');
 
             } catch (error) {
                 console.error('Error joining room:', error);
@@ -663,7 +957,6 @@
         function setupPeerConnectionHandlers() {
             peerConnection.onicecandidate = function(event) {
                 if (event.candidate) {
-                    // Send ICE candidate to peer
                     if (dataChannel && dataChannel.readyState === 'open') {
                         sendMessage({
                             type: 'ice-candidate',
@@ -713,7 +1006,7 @@
             switch (message.type) {
                 case 'document-update':
                     if (message.timestamp > getLastDocumentTimestamp()) {
-                        document.getElementById('documentContent').value = message.content;
+                        document.getElementById('documentEditor').innerHTML = message.content;
                         saveToLocalStorage();
                     }
                     break;
@@ -730,37 +1023,6 @@
                         peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
                     }
                     break;
-                case 'answer':
-                    if (peerConnection) {
-                        peerConnection.setRemoteDescription(new RTCSessionDescription(message));
-                    }
-                    break;
-                case 'offer':
-                    handleOffer(message);
-                    break;
-            }
-        }
-
-        async function handleOffer(offer) {
-            try {
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-
-                connectionToken = {
-                    type: 'answer',
-                    sdp: answer.sdp,
-                    roomId: roomId,
-                    username: username,
-                    timestamp: Date.now()
-                };
-
-                displayToken();
-                showAlert('Offer received! Share the answer token with the host.', 'success');
-
-            } catch (error) {
-                console.error('Error handling offer:', error);
-                showAlert('Failed to handle offer: ' + error.message, 'error');
             }
         }
 
@@ -810,7 +1072,7 @@
         // Token Management
         function generateToken() {
             if (!connectionToken) {
-                showAlert('No connection token available. Create or join a room first.', 'warning');
+                showAlert('No connection token available. Create a room first.', 'warning');
                 return;
             }
             displayToken();
@@ -854,11 +1116,57 @@
             showAlert('Token file downloaded!', 'success');
         }
 
+        function generateResponseToken() {
+            if (!responseToken) {
+                showAlert('No response token available. Join a room first.', 'warning');
+                return;
+            }
+            displayResponseToken();
+        }
+
+        function displayResponseToken() {
+            const tokenDisplay = document.getElementById('responseTokenDisplay');
+            tokenDisplay.textContent = JSON.stringify(responseToken, null, 2);
+            tokenDisplay.classList.remove('hidden');
+        }
+
+        function copyResponseToken() {
+            if (!responseToken) {
+                showAlert('No response token to copy', 'warning');
+                return;
+            }
+
+            const tokenText = JSON.stringify(responseToken, null, 2);
+            navigator.clipboard.writeText(tokenText).then(function() {
+                showAlert('Response token copied to clipboard!', 'success');
+            }).catch(function() {
+                showAlert('Failed to copy response token', 'error');
+            });
+        }
+
+        function downloadResponseToken() {
+            if (!responseToken) {
+                showAlert('No response token to download', 'warning');
+                return;
+            }
+
+            const tokenBlob = new Blob([JSON.stringify(responseToken, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(tokenBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `response-token-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showAlert('Response token file downloaded!', 'success');
+        }
+
         function handleTokenFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            if (file.size > 1024 * 1024) { // 1MB limit
+            if (file.size > 1024 * 1024) {
                 showAlert('File too large. Please select a smaller file.', 'error');
                 return;
             }
@@ -876,10 +1184,32 @@
             reader.readAsText(file);
         }
 
-        async function connectWithToken() {
-            const tokenInput = document.getElementById('tokenInput').value.trim();
+        function handleResponseTokenFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) {
+                showAlert('File too large. Please select a smaller file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const token = JSON.parse(e.target.result);
+                    document.getElementById('responseTokenInput').value = JSON.stringify(token, null, 2);
+                    showAlert('Response token file loaded successfully!', 'success');
+                } catch (error) {
+                    showAlert('Invalid response token file format', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function connectWithResponseToken() {
+            const tokenInput = document.getElementById('responseTokenInput').value.trim();
             if (!tokenInput) {
-                showAlert('Please enter a token', 'warning');
+                showAlert('Please enter a response token', 'warning');
                 return;
             }
 
@@ -887,67 +1217,38 @@
                 const token = JSON.parse(tokenInput);
                 
                 if (!token.type || !token.sdp || !token.roomId || !token.username) {
-                    showAlert('Invalid token format', 'error');
+                    showAlert('Invalid response token format', 'error');
                     return;
                 }
 
                 if (!isValidInput(token.roomId) || !isValidInput(token.username)) {
-                    showAlert('Invalid characters in token', 'error');
+                    showAlert('Invalid characters in response token', 'error');
                     return;
                 }
 
-                roomId = token.roomId;
-                username = token.username;
-
                 if (!peerConnection) {
-                    peerConnection = new RTCPeerConnection(configuration);
-                    setupPeerConnectionHandlers();
-
-                    if (token.type === 'offer') {
-                        // Joining as peer
-                        peerConnection.ondatachannel = function(event) {
-                            dataChannel = event.channel;
-                            setupDataChannelHandlers(dataChannel);
-                        };
-                    } else {
-                        // Host receiving answer
-                        dataChannel = peerConnection.createDataChannel('collaboration');
-                        setupDataChannelHandlers(dataChannel);
-                    }
+                    showAlert('Please create a room first', 'warning');
+                    return;
                 }
 
                 await peerConnection.setRemoteDescription(new RTCSessionDescription(token));
-
-                if (token.type === 'offer') {
-                    const answer = await peerConnection.createAnswer();
-                    await peerConnection.setLocalDescription(answer);
-
-                    connectionToken = {
-                        type: 'answer',
-                        sdp: answer.sdp,
-                        roomId: roomId,
-                        username: username,
-                        timestamp: Date.now()
-                    };
-                }
-
                 updateConnectionStatus('Connecting...', 'connecting');
-                showAlert('Token processed successfully!', 'success');
+                showAlert('Response token processed successfully!', 'success');
 
             } catch (error) {
-                console.error('Error connecting with token:', error);
-                showAlert('Failed to connect with token: ' + error.message, 'error');
+                console.error('Error connecting with response token:', error);
+                showAlert('Failed to connect with response token: ' + error.message, 'error');
             }
         }
 
         // File Operations
         function downloadDocument() {
-            const content = document.getElementById('documentContent').value;
-            const blob = new Blob([content], { type: 'text/plain' });
+            const content = document.getElementById('documentEditor').innerHTML;
+            const blob = new Blob([content], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `document-${Date.now()}.txt`;
+            a.download = `document-${Date.now()}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -968,7 +1269,7 @@
 
         function clearDocument() {
             if (confirm('Are you sure you want to clear the document?')) {
-                document.getElementById('documentContent').value = '';
+                document.getElementById('documentEditor').innerHTML = '';
                 saveToLocalStorage();
                 
                 if (dataChannel && dataChannel.readyState === 'open') {
@@ -983,14 +1284,14 @@
 
         // Local Storage
         function saveToLocalStorage() {
-            const content = document.getElementById('documentContent').value;
+            const content = document.getElementById('documentEditor').innerHTML;
             localStorage.setItem('collaborative-document', content);
         }
 
         function loadFromLocalStorage() {
             const content = localStorage.getItem('collaborative-document');
             if (content) {
-                document.getElementById('documentContent').value = content;
+                document.getElementById('documentEditor').innerHTML = content;
             }
         }
 
@@ -1033,7 +1334,6 @@
         }
 
         function isValidInput(input) {
-            // Basic XSS and injection prevention
             const dangerousPatterns = /[<>\"'&]/;
             return !dangerousPatterns.test(input) && input.length <= 1000;
         }
@@ -1048,4 +1348,3 @@
     </script>
 </body>
 </html>
-
