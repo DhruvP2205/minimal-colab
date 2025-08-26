@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Collaborative Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .mode-selection {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(45deg, #fa709a 0%, #fee140 100%);
+            box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+        }
+
+        .connection-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .role-btn {
+            padding: 12px 25px;
+            border: 2px solid #4facfe;
+            border-radius: 8px;
+            background: transparent;
+            color: #4facfe;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-btn:hover, .role-btn.active {
+            background: #4facfe;
+            color: white;
+        }
+
+        .token-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #4facfe;
+        }
+
+        .token-display {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #38a169;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .file-label:hover {
+            background: #2f855a;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #d69e2e;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status.connected {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #38a169;
+        }
+
+        .status.connecting {
+            background: #fefcbf;
+            color: #744210;
+            border: 2px solid #d69e2e;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #e53e3e;
+        }
+
+        .workspace {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .workspace.active {
+            display: block;
+        }
+
+        .editor-container {
+            display: flex;
+            gap: 20px;
+            height: 500px;
+        }
+
+        .editor {
+            flex: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            background: #f7fafc;
+        }
+
+        .canvas-container {
+            position: relative;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            overflow: hidden;
+        }
+
+        #whiteboard {
+            display: block;
+            cursor: crosshair;
+        }
+
+        .canvas-tools {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-group label {
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .color-input {
+            width: 50px;
+            height: 35px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .size-input {
+            width: 80px;
+        }
+
+        .shape-select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .download-section {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #38a169;
+        }
+
+        .alert-error {
+            background: #e53e3e;
+        }
+
+        .alert-warning {
+            background: #d69e2e;
+        }
+
+        .alert-info {
+            background: #3182ce;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .mode-buttons, .role-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .editor-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .editor {
+                height: 300px;
+            }
+            
+            .canvas-tools {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 WebRTC Collaborative Platform</h1>
+            <p>Connect, Create, and Collaborate in Real-time</p>
+        </div>
+
+        <div class="mode-selection">
+            <h2 style="text-align: center; margin-bottom: 20px;">Choose Your Mode</h2>
+            <div class="mode-buttons">
+                <button class="mode-btn active" onclick="setMode('document')">📝 Document Editor</button>
+                <button class="mode-btn" onclick="setMode('whiteboard')">🎨 Whiteboard</button>
+            </div>
+
+            <div class="connection-panel">
+                <div class="role-buttons">
+                    <button class="role-btn active" onclick="setRole('host')">🏠 Host Room</button>
+                    <button class="role-btn" onclick="setRole('guest')">🔗 Join Room</button>
+                </div>
+
+                <div id="hostPanel">
+                    <div class="token-section">
+                        <h3>🔑 Room Token</h3>
+                        <p>Share this token with collaborators:</p>
+                        <div class="token-display" id="tokenDisplay">
+                            Click "Create Room" to generate token
+                            <button class="copy-btn" onclick="copyToken()">📋 Copy</button>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary" onclick="createRoom()">🚀 Create Room</button>
+                            <button class="btn btn-success" onclick="downloadToken()">💾 Download Token</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="guestPanel" class="hidden">
+                    <div class="token-section">
+                        <h3>🔗 Join Room</h3>
+                        <div class="input-group">
+                            <label>Enter Room Token:</label>
+                            <textarea id="tokenInput" rows="4" placeholder="Paste the room token here..."></textarea>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <span>Or upload token file: </span>
+                            <input type="file" id="tokenFile" class="file-input" accept=".json" onchange="loadTokenFile()">
+                            <label for="tokenFile" class="file-label">📁 Choose File</label>
+                        </div>
+                        <button class="btn btn-primary" onclick="joinRoom()">🚀 Join Room</button>
+                    </div>
+                </div>
+
+                <div id="connectionStatus"></div>
+            </div>
+        </div>
+
+        <!-- Document Editor Workspace -->
+        <div id="documentWorkspace" class="workspace active">
+            <h2>📝 Document Editor</h2>
+            <div class="input-group">
+                <label>Document Title:</label>
+                <input type="text" id="documentTitle" placeholder="Enter document title..." value="Untitled Document">
+            </div>
+            <div class="editor-container">
+                <textarea id="documentEditor" class="editor" placeholder="Start typing your document here..."></textarea>
+            </div>
+            <div class="download-section">
+                <button class="btn btn-success" onclick="saveDocument()">💾 Save Document</button>
+                <button class="btn btn-primary" onclick="downloadDocument()">📥 Download Document</button>
+                <button class="btn btn-warning" onclick="loadDocument()">📁 Load Document</button>
+                <input type="file" id="docFile" class="file-input" accept=".txt,.json" onchange="handleDocumentFile()">
+            </div>
+        </div>
+
+        <!-- Whiteboard Workspace -->
+        <div id="whiteboardWorkspace" class="workspace">
+            <h2>🎨 Whiteboard</h2>
+            <div class="canvas-tools">
+                <div class="tool-group">
+                    <label>🎨 Color:</label>
+                    <input type="color" class="color-input" id="brushColor" value="#000000">
+                </div>
+                <div class="tool-group">
+                    <label>📏 Size:</label>
+                    <input type="range" class="size-input" id="brushSize" min="1" max="50" value="5">
+                    <span id="sizeDisplay">5</span>px
+                </div>
+                <div class="tool-group">
+                    <label>🔧 Tool:</label>
+                    <select class="shape-select" id="drawingTool">
+                        <option value="brush">🖌️ Brush</option>
+                        <option value="eraser">🧽 Eraser</option>
+                        <option value="line">📏 Line</option>
+                        <option value="rectangle">▭ Rectangle</option>
+                        <option value="circle">⭕ Circle</option>
+                    </select>
+                </div>
+                <button class="btn btn-danger" onclick="clearCanvas()">🗑️ Clear Canvas</button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="whiteboard" width="800" height="500"></canvas>
+            </div>
+            <div class="download-section">
+                <button class="btn btn-success" onclick="saveCanvas()">💾 Save Canvas</button>
+                <button class="btn btn-primary" onclick="downloadCanvas()">📥 Download Canvas</button>
+                <button class="btn btn-warning" onclick="loadCanvas()">📁 Load Canvas</button>
+                <input type="file" id="canvasFile" class="file-input" accept="image/*,.json" onchange="handleCanvasFile()">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Security and utility functions
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input.replace(/[<>'"&]/g, function(match) {
+                const entities = {
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#x27;',
+                    '&': '&amp;'
+                };
+                return entities[match];
+            });
+        }
+
+        function validateJSON(str) {
+            try {
+                const parsed = JSON.parse(str);
+                if (parsed && typeof parsed === 'object') {
+                    return parsed;
+                }
+            } catch (e) {
+                return null;
+            }
+            return null;
+        }
+
+        function showAlert(message, type = 'info') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = sanitizeInput(message);
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function generateSecureId() {
+            const array = new Uint32Array(8);
+            crypto.getRandomValues(array);
+            return Array.from(array, dec => dec.toString(16)).join('');
+        }
+
+        // Global variables
+        let currentMode = 'document';
+        let currentRole = 'host';
+        let peerConnection = null;
+        let dataChannel = null;
+        let isConnected = false;
+        let isHost = true;
+        let roomToken = null;
+        let canvas = null;
+        let ctx = null;
+        let isDrawing = false;
+        let startX = 0;
+        let startY = 0;
+
+        // WebRTC Configuration
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
+
+        // Initialize the application
+        function init() {
+            setupEventListeners();
+            setupCanvas();
+            loadFromLocalStorage();
+        }
+
+        function setupEventListeners() {
+            const documentEditor = document.getElementById('documentEditor');
+            const brushSize = document.getElementById('brushSize');
+            const sizeDisplay = document.getElementById('sizeDisplay');
+
+            documentEditor.addEventListener('input', function() {
+                if (isConnected && dataChannel && dataChannel.readyState === 'open') {
+                    sendMessage({
+                        type: 'document-update',
+                        content: this.value,
+                        title: document.getElementById('documentTitle').value
+                    });
+                }
+                saveToLocalStorage();
+            });
+
+            document.getElementById('documentTitle').addEventListener('input', function() {
+                if (isConnected && dataChannel && dataChannel.readyState === 'open') {
+                    sendMessage({
+                        type: 'document-update',
+                        content: documentEditor.value,
+                        title: this.value
+                    });
+                }
+                saveToLocalStorage();
+            });
+
+            brushSize.addEventListener('input', function() {
+                sizeDisplay.textContent = this.value;
+            });
+        }
+
+        function setupCanvas() {
+            canvas = document.getElementById('whiteboard');
+            ctx = canvas.getContext('2d');
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            if (e.type === 'touchstart') {
+                startDrawing({ offsetX: x, offsetY: y });
+            } else if (e.type === 'touchmove') {
+                draw({ offsetX: x, offsetY: y });
+            }
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update UI
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.workspace').forEach(ws => ws.classList.remove('active'));
+            document.getElementById(mode + 'Workspace').classList.add('active');
+            
+            showAlert(`Switched to ${mode} mode`, 'info');
+        }
+
+        function setRole(role) {
+            currentRole = role;
+            isHost = role === 'host';
+            
+            // Update UI
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('hostPanel').classList.toggle('hidden', !isHost);
+            document.getElementById('guestPanel').classList.toggle('hidden', isHost);
+            
+            if (!isHost) {
+                closeConnection();
+            }
+        }
+
+        async function createRoom() {
+            try {
+                roomToken = {
+                    id: generateSecureId(),
+                    timestamp: Date.now(),
+                    mode: currentMode
+                };
+
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                setupPeerConnection();
+
+                dataChannel = peerConnection.createDataChannel('collaboration', {
+                    ordered: true
+                });
+                setupDataChannel(dataChannel);
+
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                roomToken.offer = offer;
+                
+                document.getElementById('tokenDisplay').innerHTML = `
+                    ${JSON.stringify(roomToken, null, 2)}
+                    <button class="copy-btn" onclick="copyToken()">📋 Copy</button>
+                `;
+
+                updateConnectionStatus('Waiting for connection...', 'connecting');
+                showAlert('Room created successfully! Share the token with collaborators.', 'success');
+                
+            } catch (error) {
+                console.error('Error creating room:', error);
+                showAlert('Failed to create room. Please try again.', 'error');
+            }
+        }
+
+        async function joinRoom() {
+            const tokenInput = document.getElementById('tokenInput').value.trim();
+            
+            if (!tokenInput) {
+                showAlert('Please enter a room token.', 'warning');
+                return;
+            }
+
+            const token = validateJSON(tokenInput);
+            if (!token || !token.offer) {
+                showAlert('Invalid token format.', 'error');
+                return;
+            }
+
+            try {
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                setupPeerConnection();
+
+                peerConnection.ondatachannel = function(event) {
+                    const channel = event.channel;
+                    setupDataChannel(channel);
+                    dataChannel = channel;
+                };
+
+                await peerConnection.setRemoteDescription(token.offer);
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+
+                // In a real application, you would send this answer back to the host
+                // For this demo, we'll show it to be shared manually
+                const answerToken = {
+                    id: token.id,
+                    answer: answer,
+                    timestamp: Date.now()
+                };
+
+                updateConnectionStatus('Share this answer token with the host:', 'connecting');
+                
+                const statusDiv = document.getElementById('connectionStatus');
+                statusDiv.innerHTML += `
+                    <div class="token-display" style="margin-top: 10px;">
+                        ${JSON.stringify(answerToken, null, 2)}
+                        <button class="copy-btn" onclick="copyText('${JSON.stringify(answerToken).replace(/'/g, "\\'")}')">📋 Copy</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAnswerInput()">📨 Receive Host Response</button>
+                `;
+
+            } catch (error) {
+                console.error('Error joining room:', error);
+                showAlert('Failed to join room. Please check the token and try again.', 'error');
+            }
+        }
+
+        function showAnswerInput() {
+            const statusDiv = document.getElementById('connectionStatus');
+            statusDiv.innerHTML += `
+                <div class="token-section" style="margin-top: 20px;">
+                    <h4>Host Response</h4>
+                    <textarea id="hostResponse" rows="4" placeholder="Paste the host response here..."></textarea>
+                    <br><br>
+                    <button class="btn btn-primary" onclick="processHostResponse()">🔗 Complete Connection</button>
+                </div>
+            `;
+        }
+
+        async function processHostResponse() {
+            const responseText = document.getElementById('hostResponse').value.trim();
+            
+            if (!responseText) {
+                showAlert('Please enter the host response.', 'warning');
+                return;
+            }
+
+            const response = validateJSON(responseText);
+            if (!response || !response.answer) {
+                showAlert('Invalid response format.', 'error');
+                return;
+            }
+
+            try {
+                await peerConnection.setRemoteDescription(response.answer);
+                showAlert('Connection established successfully!', 'success');
+            } catch (error) {
+                console.error('Error processing host response:', error);
+                showAlert('Failed to establish connection.', 'error');
+            }
+        }
+
+        function setupPeerConnection() {
+            peerConnection.oniceconnectionstatechange = function() {
+                console.log('ICE connection state:', peerConnection.iceConnectionState);
+                
+                if (peerConnection.iceConnectionState === 'connected' || 
+                    peerConnection.iceConnectionState === 'completed') {
+                    isConnected = true;
+                    updateConnectionStatus('🟢 Connected successfully!', 'connected');
+                    showAlert('Peer connection established!', 'success');
+                } else if (peerConnection.iceConnectionState === 'disconnected' || 
+                          peerConnection.iceConnectionState === 'failed') {
+                    isConnected = false;
+                    updateConnectionStatus('❌ Connection lost', 'error');
+                    showAlert('Connection lost. Please try reconnecting.', 'error');
+                }
+            };
+
+            peerConnection.onconnectionstatechange = function() {
+                console.log('Connection state:', peerConnection.connectionState);
+            };
+        }
+
+        function setupDataChannel(channel) {
+            channel.onopen = function() {
+                console.log('Data channel opened');
+                isConnected = true;
+                updateConnectionStatus('🟢 Data channel connected!', 'connected');
+                
+                // Send current content to new peer
+                if (isHost) {
+                    sendCurrentContent();
+                }
+            };
+
+            channel.onclose = function() {
+                console.log('Data channel closed');
+                isConnected = false;
+                updateConnectionStatus('❌ Data channel closed', 'error');
+            };
+
+            channel.onmessage = function(event) {
+                handleMessage(JSON.parse(event.data));
+            };
+
+            channel.onerror = function(error) {
+                console.error('Data channel error:', error);
+                showAlert('Data channel error occurred.', 'error');
+            };
+        }
+
+        function sendMessage(message) {
+            if (dataChannel && dataChannel.readyState === 'open') {
+                dataChannel.send(JSON.stringify(message));
+            }
+        }
+
+        function sendCurrentContent() {
+            if (currentMode === 'document') {
+                sendMessage({
+                    type: 'document-update',
+                    content: document.getElementById('documentEditor').value,
+                    title: document.getElementById('documentTitle').value
+                });
+            } else if (currentMode === 'whiteboard') {
+                sendMessage({
+                    type: 'canvas-data',
+                    imageData: canvas.toDataURL()
+                });
+            }
+        }
+
+        function handleMessage(message) {
+            switch (message.type) {
+                case 'document-update':
+                    if (currentMode === 'document') {
+                        document.getElementById('documentEditor').value = sanitizeInput(message.content);
+                        document.getElementById('documentTitle').value = sanitizeInput(message.title);
+                        saveToLocalStorage();
+                    }
+                    break;
+                    
+                case 'canvas-draw':
+                    if (currentMode === 'whiteboard') {
+                        drawRemotePath(message);
+                    }
+                    break;
+                    
+                case 'canvas-data':
+                    if (currentMode === 'whiteboard') {
+                        loadCanvasFromDataURL(message.imageData);
+                    }
+                    break;
+                    
+                case 'canvas-clear':
+                    if (currentMode === 'whiteboard') {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        saveToLocalStorage();
+                    }
+                    break;
+            }
+        }
+
+        function copyToken() {
+            const tokenText = document.getElementById('tokenDisplay').textContent;
+            copyText(tokenText);
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Token copied to clipboard!', 'success');
+            }).catch(() => {
+                showAlert('Failed to copy token.', 'error');
+            });
+        }
+
+        function downloadToken() {
+            if (!roomToken) {
+                showAlert('No token to download. Create a room first.', 'warning');
+                return;
+            }
+
+            const blob = new Blob([JSON.stringify(roomToken, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `room-token-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showAlert('Token file downloaded!', 'success');
+        }
+
+        function loadTokenFile() {
+            const file = document.getElementById('tokenFile').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const token = validateJSON(e.target.result);
+                    if (token) {
+                        document.getElementById('tokenInput').value = JSON.stringify(token, null, 2);
+                        showAlert('Token file loaded successfully!', 'success');
+                    } else {
+                        showAlert('Invalid token file format.', 'error');
+                    }
+                } catch (error) {
+                    showAlert('Error reading token file.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function updateConnectionStatus(message, type) {
+            const statusDiv = document.getElementById('connectionStatus');
+            statusDiv.innerHTML = `<div class="status ${type}">${sanitizeInput(message)}</div>`;
+        }
+
+        function closeConnection() {
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            if (dataChannel) {
+                dataChannel.close();
+                dataChannel = null;
+            }
+            isConnected = false;
+            updateConnectionStatus('', '');
+        }
+
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            startX = e.offsetX;
+            startY = e.offsetY;
+            
+            const tool = document.getElementById('drawingTool').value;
+            if (tool === 'brush' || tool === 'eraser') {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const tool = document.getElementById('drawingTool').value;
+            const color = document.getElementById('brushColor').value;
+            const size = document.getElementById('brushSize').value;
+            
+            ctx.lineWidth = size;
+            ctx.strokeStyle = tool === 'eraser' ? '#FFFFFF' : color;
+            ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
+            
+            if (tool === 'brush' || tool === 'eraser') {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                
+                // Send drawing data to peer
+                if (isConnected) {
+                    sendMessage({
+                        type: 'canvas-draw',
+                        tool: tool,
+                        color: color,
+                        size: size,
+                        x: e.offsetX,
+                        y: e.offsetY,
+                        startX: startX,
+                        startY: startY,
+                        drawing: true
+                    });
+                }
+            }
+        }
+
+        function stopDrawing(e) {
+            if (!isDrawing) return;
+            isDrawing = false;
+            
+            const tool = document.getElementById('drawingTool').value;
+            const color = document.getElementById('brushColor').value;
+            const size = document.getElementById('brushSize').value;
+            
+            if (tool === 'line' || tool === 'rectangle' || tool === 'circle') {
+                ctx.lineWidth = size;
+                ctx.strokeStyle = color;
+                ctx.globalCompositeOperation = 'source-over';
+                
+                if (tool === 'line') {
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                } else if (tool === 'rectangle') {
+                    ctx.beginPath();
+                    ctx.rect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+                    ctx.stroke();
+                } else if (tool === 'circle') {
+                    const radius = Math.sqrt(Math.pow(e.offsetX - startX, 2) + Math.pow(e.offsetY - startY, 2));
+                    ctx.beginPath();
+                    ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+                
+                // Send shape data to peer
+                if (isConnected) {
+                    sendMessage({
+                        type: 'canvas-draw',
+                        tool: tool,
+                        color: color,
+                        size: size,
+                        x: e.offsetX,
+                        y: e.offsetY,
+                        startX: startX,
+                        startY: startY,
+                        drawing: false
+                    });
+                }
+            }
+            
+            saveToLocalStorage();
+        }
+
+        function drawRemotePath(data) {
+            ctx.lineWidth = data.size;
+            ctx.strokeStyle = data.tool === 'eraser' ? '#FFFFFF' : data.color;
+            ctx.globalCompositeOperation = data.tool === 'eraser' ? 'destination-out' : 'source-over';
+            
+            if (data.tool === 'brush' || data.tool === 'eraser') {
+                if (data.drawing) {
+                    ctx.lineTo(data.x, data.y);
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(data.startX, data.startY);
+                }
+            } else if (!data.drawing) {
+                if (data.tool === 'line') {
+                    ctx.beginPath();
+                    ctx.moveTo(data.startX, data.startY);
+                    ctx.lineTo(data.x, data.y);
+                    ctx.stroke();
+                } else if (data.tool === 'rectangle') {
+                    ctx.beginPath();
+                    ctx.rect(data.startX, data.startY, data.x - data.startX, data.y - data.startY);
+                    ctx.stroke();
+                } else if (data.tool === 'circle') {
+                    const radius = Math.sqrt(Math.pow(data.x - data.startX, 2) + Math.pow(data.y - data.startY, 2));
+                    ctx.beginPath();
+                    ctx.arc(data.startX, data.startY, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+            }
+            
+            saveToLocalStorage();
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (isConnected) {
+                sendMessage({ type: 'canvas-clear' });
+            }
+            
+            saveToLocalStorage();
+            showAlert('Canvas cleared!', 'info');
+        }
+
+        function loadCanvasFromDataURL(dataURL) {
+            const img = new Image();
+            img.onload = function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                saveToLocalStorage();
+            };
+            img.src = dataURL;
+        }
+
+        // Storage functions
+        function saveToLocalStorage() {
+            try {
+                const data = {
+                    document: {
+                        title: document.getElementById('documentTitle').value,
+                        content: document.getElementById('documentEditor').value
+                    },
+                    canvas: canvas ? canvas.toDataURL() : null,
+                    timestamp: Date.now()
+                };
+                
+                // Store with size limit check
+                const dataString = JSON.stringify(data);
+                if (dataString.length > 5000000) { // 5MB limit
+                    showAlert('Data too large to save locally. Consider downloading files.', 'warning');
+                    return;
+                }
+                
+                // Use in-memory storage instead of localStorage
+                window.collaborationData = data;
+                
+            } catch (error) {
+                console.error('Error saving to storage:', error);
+                showAlert('Failed to save data locally.', 'error');
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                // Load from in-memory storage
+                const data = window.collaborationData;
+                
+                if (data) {
+                    if (data.document) {
+                        document.getElementById('documentTitle').value = data.document.title || '';
+                        document.getElementById('documentEditor').value = data.document.content || '';
+                    }
+                    
+                    if (data.canvas && canvas) {
+                        loadCanvasFromDataURL(data.canvas);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading from storage:', error);
+            }
+        }
+
+        // Document functions
+        function saveDocument() {
+            try {
+                const data = {
+                    title: document.getElementById('documentTitle').value,
+                    content: document.getElementById('documentEditor').value,
+                    timestamp: Date.now(),
+                    type: 'document'
+                };
+                
+                window.collaborationData = { ...window.collaborationData, document: data };
+                showAlert('Document saved successfully!', 'success');
+            } catch (error) {
+                showAlert('Failed to save document.', 'error');
+            }
+        }
+
+        function downloadDocument() {
+            const title = document.getElementById('documentTitle').value || 'Untitled Document';
+            const content = document.getElementById('documentEditor').value;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${sanitizeInput(title)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showAlert('Document downloaded!', 'success');
+        }
+
+        function loadDocument() {
+            document.getElementById('docFile').click();
+        }
+
+        function handleDocumentFile() {
+            const file = document.getElementById('docFile').files[0];
+            if (!file) return;
+            
+            if (file.size > 10000000) { // 10MB limit
+                showAlert('File too large. Maximum size is 10MB.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let content = e.target.result;
+                    let title = file.name.replace(/\.[^/.]+$/, "");
+                    
+                    if (file.name.endsWith('.json')) {
+                        const data = validateJSON(content);
+                        if (data && data.content) {
+                            content = data.content;
+                            title = data.title || title;
+                        }
+                    }
+                    
+                    document.getElementById('documentTitle').value = sanitizeInput(title);
+                    document.getElementById('documentEditor').value = sanitizeInput(content);
+                    
+                    saveToLocalStorage();
+                    
+                    if (isConnected) {
+                        sendMessage({
+                            type: 'document-update',
+                            content: content,
+                            title: title
+                        });
+                    }
+                    
+                    showAlert('Document loaded successfully!', 'success');
+                } catch (error) {
+                    showAlert('Error loading document file.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Canvas functions
+        function saveCanvas() {
+            try {
+                const data = {
+                    imageData: canvas.toDataURL(),
+                    timestamp: Date.now(),
+                    type: 'canvas'
+                };
+                
+                window.collaborationData = { ...window.collaborationData, canvas: data.imageData };
+                showAlert('Canvas saved successfully!', 'success');
+            } catch (error) {
+                showAlert('Failed to save canvas.', 'error');
+            }
+        }
+
+        function downloadCanvas() {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `whiteboard-${Date.now()}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showAlert('Canvas downloaded!', 'success');
+            });
+        }
+
+        function loadCanvas() {
+            document.getElementById('canvasFile').click();
+        }
+
+        function handleCanvasFile() {
+            const file = document.getElementById('canvasFile').files[0];
+            if (!file) return;
+            
+            if (file.size > 20000000) { // 20MB limit
+                showAlert('File too large. Maximum size is 20MB.', 'error');
+                return;
+            }
+
+            if (file.name.endsWith('.json')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = validateJSON(e.target.result);
+                        if (data && data.imageData) {
+                            loadCanvasFromDataURL(data.imageData);
+                            showAlert('Canvas loaded successfully!', 'success');
+                            
+                            if (isConnected) {
+                                sendMessage({
+                                    type: 'canvas-data',
+                                    imageData: data.imageData
+                                });
+                            }
+                        } else {
+                            showAlert('Invalid canvas file format.', 'error');
+                        }
+                    } catch (error) {
+                        showAlert('Error loading canvas file.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            } else if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    loadCanvasFromDataURL(e.target.result);
+                    showAlert('Image loaded to canvas!', 'success');
+                    
+                    if (isConnected) {
+                        sendMessage({
+                            type: 'canvas-data',
+                            imageData: e.target.result
+                        });
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                showAlert('Please select a valid image or JSON file.', 'error');
+            }
+        }
+
+        // Initialize the application when the page loads
+        window.addEventListener('load', init);
+
+        // Handle page unload
+        window.addEventListener('beforeunload', function() {
+            if (peerConnection) {
+                peerConnection.close();
+            }
+        });
+
+        // Handle visibility change to save data
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                saveToLocalStorage();
+            }
+        });
+    </script>
+</body>
+</html>
