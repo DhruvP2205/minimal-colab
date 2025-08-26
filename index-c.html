@@ -520,7 +520,7 @@
                     ordered: true
                 });
                 
-                // Store the pending connection
+                // Store the pending connection for host
                 const connectionData = {
                     pc: pc,
                     channel: dataChannel,
@@ -529,7 +529,8 @@
                 };
                 
                 this.connections.set('pending', connectionData);
-                this.setupPeerConnection(pc, dataChannel, 'pending', 'pending');
+                this.setupPeerConnectionEvents(pc, 'pending', 'pending');
+                this.setupDataChannel(dataChannel, 'pending', 'pending');
                 
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
@@ -578,9 +579,22 @@
                 
                 const pc = new RTCPeerConnection({ iceServers: this.iceServers });
                 
-                pc.ondatachannel = (event) => {
-                    this.setupPeerConnection(pc, event.channel, token.hostId, token.hostName || 'Host');
+                // Store connection immediately for guest
+                const connectionData = {
+                    pc: pc,
+                    channel: null, // Will be set when datachannel opens
+                    peerId: token.hostId,
+                    peerName: token.hostName || 'Host'
                 };
+                
+                pc.ondatachannel = (event) => {
+                    console.log('Guest received data channel from host');
+                    connectionData.channel = event.channel;
+                    this.connections.set(token.hostId, connectionData);
+                    this.setupDataChannel(event.channel, token.hostId, token.hostName || 'Host');
+                };
+
+                this.setupPeerConnectionEvents(pc, token.hostId, token.hostName || 'Host');
 
                 await pc.setRemoteDescription(token.offer);
                 const answer = await pc.createAnswer();
@@ -641,24 +655,15 @@
                 }
             }
 
-            setupPeerConnection(pc, dataChannel, peerId, peerName) {
-                const connectionData = {
-                    pc: pc,
-                    channel: dataChannel,
-                    peerId: peerId,
-                    peerName: peerName
-                };
-
+            setupPeerConnectionEvents(pc, peerId, peerName) {
                 pc.oniceconnectionstatechange = () => {
                     console.log('ICE connection state:', pc.iceConnectionState, 'for peer:', peerName);
                     
                     if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
                         this.updateStatus('connected', `Connected with ${peerName}`);
                         
-                        if (peerId === 'pending') {
-                            // Keep as pending until we get the answer with real peer info
-                        } else {
-                            this.connections.set(peerId, connectionData);
+                        // Update participants
+                        if (peerName !== 'pending') {
                             this.participants.add(peerName);
                         }
                         
@@ -671,18 +676,27 @@
                         this.handleDisconnection(peerId, peerName);
                     }
                 };
+            }
 
+            setupDataChannel(dataChannel, peerId, peerName) {
                 dataChannel.onopen = () => {
                     console.log('Data channel opened with', peerName);
                     
-                    // Send current document content to new peer
+                    // Send current document content to new peer if host
                     if (this.isHost) {
                         const syncMessage = {
                             type: 'sync',
                             content: document.getElementById('documentEditor').innerHTML,
                             participants: Array.from(this.participants)
                         };
-                        dataChannel.send(JSON.stringify(syncMessage));
+                        
+                        // Small delay to ensure channel is fully ready
+                        setTimeout(() => {
+                            if (dataChannel.readyState === 'open') {
+                                dataChannel.send(JSON.stringify(syncMessage));
+                                console.log('Sent sync message to', peerName);
+                            }
+                        }, 100);
                     }
                     
                     // Send join notification
@@ -692,12 +706,19 @@
                         peerName: this.peerName,
                         participants: Array.from(this.participants)
                     };
-                    dataChannel.send(JSON.stringify(joinMessage));
+                    
+                    setTimeout(() => {
+                        if (dataChannel.readyState === 'open') {
+                            dataChannel.send(JSON.stringify(joinMessage));
+                            console.log('Sent join message to', peerName);
+                        }
+                    }, 200);
                 };
 
                 dataChannel.onmessage = (event) => {
                     try {
                         const message = JSON.parse(event.data);
+                        console.log('Received message:', message.type, 'from', peerName);
                         this.handleMessage(message);
                     } catch (error) {
                         console.error('Error parsing message:', error);
@@ -705,7 +726,7 @@
                 };
 
                 dataChannel.onerror = (error) => {
-                    console.error('Data channel error:', error);
+                    console.error('Data channel error with', peerName, ':', error);
                 };
 
                 dataChannel.onclose = () => {
