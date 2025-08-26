@@ -26,8 +26,8 @@
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 900px;
-            min-height: 600px;
+            max-width: 1000px;
+            min-height: 700px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -90,6 +90,24 @@
         .status.connecting { background: #fff3cd; color: #856404; }
         .status.connected { background: #d4edda; color: #155724; }
 
+        .connection-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .connection-alert.show {
+            transform: translateX(0);
+        }
+
         .token-section {
             margin: 20px 0;
             padding: 15px;
@@ -107,6 +125,8 @@
             word-break: break-all;
             font-family: monospace;
             font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
         }
 
         .token-input {
@@ -117,6 +137,8 @@
             margin: 10px 0;
             font-family: monospace;
             font-size: 12px;
+            min-height: 80px;
+            resize: vertical;
         }
 
         .file-input {
@@ -140,19 +162,69 @@
         .participants {
             font-size: 14px;
             color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .participants-count {
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .toolbar button {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .toolbar button:hover {
+            background: #e9ecef;
+        }
+
+        .toolbar button.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .toolbar select {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
         }
 
         .document-editor {
             flex: 1;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 0 0 8px 8px;
             padding: 15px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 14px;
-            line-height: 1.5;
-            resize: none;
+            line-height: 1.6;
             outline: none;
             min-height: 300px;
+            overflow-y: auto;
+            background: white;
         }
 
         .document-editor:focus {
@@ -171,26 +243,24 @@
             margin-top: 10px;
         }
 
-        .peer-cursor {
-            position: absolute;
-            width: 2px;
-            background: #ff4444;
-            height: 20px;
-            pointer-events: none;
+        .peer-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 12px;
             z-index: 1000;
         }
 
-        .peer-cursor::after {
-            content: attr(data-peer);
-            position: absolute;
-            top: -25px;
-            left: 0;
-            background: #ff4444;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-            white-space: nowrap;
+        .color-picker {
+            width: 40px;
+            height: 30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         @media (max-width: 768px) {
@@ -200,6 +270,10 @@
             
             .token-actions {
                 flex-direction: column;
+            }
+
+            .toolbar {
+                justify-content: space-between;
             }
         }
     </style>
@@ -252,24 +326,84 @@
 
         <div class="editor-container">
             <div class="editor-header">
-                <h3>📝 Document</h3>
-                <div class="participants" id="participants">Participants: You</div>
+                <h3>📝 Rich Text Document</h3>
+                <div class="participants" id="participants">
+                    <span>👥 Participants:</span>
+                    <span class="participants-count" id="participantCount">1</span>
+                    <span id="participantsList">You</span>
+                </div>
             </div>
-            <textarea class="document-editor" id="documentEditor" placeholder="Start typing to create your document..."></textarea>
+
+            <!-- Rich Text Toolbar -->
+            <div class="toolbar">
+                <button onclick="formatDoc('bold')" title="Bold"><b>B</b></button>
+                <button onclick="formatDoc('italic')" title="Italic"><i>I</i></button>
+                <button onclick="formatDoc('underline')" title="Underline"><u>U</u></button>
+                <button onclick="formatDoc('strikeThrough')" title="Strike"><s>S</s></button>
+                
+                <select onchange="formatDoc('fontSize', this.value)" title="Font Size">
+                    <option value="1">8pt</option>
+                    <option value="2">10pt</option>
+                    <option value="3" selected>12pt</option>
+                    <option value="4">14pt</option>
+                    <option value="5">18pt</option>
+                    <option value="6">24pt</option>
+                    <option value="7">36pt</option>
+                </select>
+
+                <select onchange="formatDoc('fontName', this.value)" title="Font Family">
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times</option>
+                    <option value="Courier New">Courier</option>
+                    <option value="Verdana" selected>Verdana</option>
+                </select>
+
+                <input type="color" class="color-picker" onchange="formatDoc('foreColor', this.value)" title="Text Color" value="#000000">
+                <input type="color" class="color-picker" onchange="formatDoc('backColor', this.value)" title="Background Color" value="#ffffff">
+
+                <button onclick="formatDoc('justifyLeft')" title="Align Left">⬅️</button>
+                <button onclick="formatDoc('justifyCenter')" title="Center">↔️</button>
+                <button onclick="formatDoc('justifyRight')" title="Align Right">➡️</button>
+
+                <button onclick="formatDoc('insertUnorderedList')" title="Bullet List">• List</button>
+                <button onclick="formatDoc('insertOrderedList')" title="Number List">1. List</button>
+                
+                <button onclick="formatDoc('outdent')" title="Outdent">⬅️ Tab</button>
+                <button onclick="formatDoc('indent')" title="Indent">Tab ➡️</button>
+
+                <button onclick="formatDoc('undo')" title="Undo">↶ Undo</button>
+                <button onclick="formatDoc('redo')" title="Redo">↷ Redo</button>
+            </div>
+
+            <div class="document-editor" id="documentEditor" contenteditable="true" 
+                 placeholder="Start typing to create your document..."></div>
         </div>
+    </div>
+
+    <!-- Connection Alert -->
+    <div class="connection-alert" id="connectionAlert">
+        🎉 Connection Established! You can now collaborate in real-time.
+    </div>
+
+    <!-- Peer Info -->
+    <div class="peer-info hidden" id="peerInfo">
+        Connected peers: <span id="peerList"></span>
     </div>
 
     <script>
         class CollaborativeEditor {
             constructor() {
                 this.peerId = this.generateId();
+                this.peerName = `User_${this.peerId.slice(0, 4)}`;
                 this.connections = new Map();
                 this.isHost = false;
                 this.documentContent = '';
-                this.localChanges = [];
+                this.participants = new Set([this.peerName]);
                 
                 this.setupEditor();
                 this.setupICEServers();
+                this.setupBeforeUnload();
             }
 
             generateId() {
@@ -277,39 +411,91 @@
             }
 
             setupICEServers() {
-                // STUN servers for NAT traversal (works for both local and internet)
                 this.iceServers = [
                     { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' }
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' }
                 ];
+            }
+
+            setupBeforeUnload() {
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.connections.size > 0) {
+                        e.preventDefault();
+                        e.returnValue = 'You have active connections. Are you sure you want to leave?';
+                        return e.returnValue;
+                    }
+                });
             }
 
             setupEditor() {
                 const editor = document.getElementById('documentEditor');
-                let lastContent = editor.value;
+                let isUpdating = false;
                 
+                // Handle content changes
                 editor.addEventListener('input', (e) => {
-                    const currentContent = editor.value;
+                    if (isUpdating) return;
+                    
+                    const content = editor.innerHTML;
                     const change = {
                         type: 'content',
-                        content: currentContent,
+                        content: content,
                         timestamp: Date.now(),
-                        peerId: this.peerId
+                        peerId: this.peerId,
+                        peerName: this.peerName
                     };
                     
                     this.broadcastChange(change);
-                    lastContent = currentContent;
                 });
 
-                editor.addEventListener('selectionchange', () => {
-                    const selection = {
-                        type: 'cursor',
-                        start: editor.selectionStart,
-                        end: editor.selectionEnd,
-                        peerId: this.peerId
-                    };
-                    this.broadcastChange(selection);
+                // Handle formatting commands
+                editor.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        const change = {
+                            type: 'format',
+                            key: e.key,
+                            timestamp: Date.now(),
+                            peerId: this.peerId,
+                            peerName: this.peerName
+                        };
+                        setTimeout(() => this.broadcastChange({
+                            type: 'content',
+                            content: editor.innerHTML,
+                            timestamp: Date.now(),
+                            peerId: this.peerId,
+                            peerName: this.peerName
+                        }), 10);
+                    }
                 });
+
+                // Receive content updates
+                this.onContentUpdate = (content) => {
+                    isUpdating = true;
+                    const selection = this.saveSelection();
+                    editor.innerHTML = content;
+                    this.restoreSelection(selection);
+                    isUpdating = false;
+                };
+            }
+
+            saveSelection() {
+                const sel = window.getSelection();
+                if (sel.getRangeAt && sel.rangeCount) {
+                    return sel.getRangeAt(0);
+                }
+                return null;
+            }
+
+            restoreSelection(range) {
+                if (range) {
+                    try {
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    } catch (e) {
+                        console.log('Could not restore selection');
+                    }
+                }
             }
 
             async createRoom() {
@@ -320,6 +506,7 @@
                     type: 'offer',
                     offer: offer,
                     hostId: this.peerId,
+                    hostName: this.peerName,
                     timestamp: Date.now()
                 };
 
@@ -329,16 +516,20 @@
 
             async createOffer() {
                 const pc = new RTCPeerConnection({ iceServers: this.iceServers });
-                const dataChannel = pc.createDataChannel('collaboration');
-                
-                // Store the pending connection
-                this.connections.set('pending', {
-                    pc: pc,
-                    channel: dataChannel,
-                    peerId: 'pending'
+                const dataChannel = pc.createDataChannel('collaboration', {
+                    ordered: true
                 });
                 
-                this.setupPeerConnection(pc, dataChannel, 'pending');
+                // Store the pending connection
+                const connectionData = {
+                    pc: pc,
+                    channel: dataChannel,
+                    peerId: 'pending',
+                    peerName: 'pending'
+                };
+                
+                this.connections.set('pending', connectionData);
+                this.setupPeerConnection(pc, dataChannel, 'pending', 'pending');
                 
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
@@ -373,9 +564,11 @@
                         await this.handleOffer(token);
                     } else if (token.type === 'answer') {
                         await this.handleAnswer(token);
+                    } else {
+                        alert('Invalid token type');
                     }
                 } catch (error) {
-                    alert('Invalid token format');
+                    alert('Invalid token format: ' + error.message);
                     console.error('Token error:', error);
                 }
             }
@@ -386,7 +579,7 @@
                 const pc = new RTCPeerConnection({ iceServers: this.iceServers });
                 
                 pc.ondatachannel = (event) => {
-                    this.setupPeerConnection(pc, event.channel, token.hostId);
+                    this.setupPeerConnection(pc, event.channel, token.hostId, token.hostName || 'Host');
                 };
 
                 await pc.setRemoteDescription(token.offer);
@@ -400,6 +593,7 @@
                                 type: 'answer',
                                 answer: pc.localDescription,
                                 guestId: this.peerId,
+                                guestName: this.peerName,
                                 hostId: token.hostId,
                                 timestamp: Date.now()
                             };
@@ -417,53 +611,106 @@
             async handleAnswer(token) {
                 const connection = this.connections.get('pending');
                 if (connection) {
-                    await connection.pc.setRemoteDescription(token.answer);
-                    this.connections.delete('pending');
-                    this.connections.set(token.guestId, connection);
-                    this.updateParticipants();
-                    console.log('Answer processed, connection should establish soon...');
+                    try {
+                        await connection.pc.setRemoteDescription(token.answer);
+                        this.connections.delete('pending');
+                        
+                        // Update connection with actual peer info
+                        connection.peerId = token.guestId;
+                        connection.peerName = token.guestName || `Guest_${token.guestId.slice(0, 4)}`;
+                        
+                        this.connections.set(token.guestId, connection);
+                        this.participants.add(connection.peerName);
+                        
+                        console.log('Answer processed successfully');
+                        this.updateStatus('connecting', 'Answer processed, establishing connection...');
+                        
+                        // Clear the response input
+                        const responseInput = document.getElementById('responseTokenInput');
+                        if (responseInput) {
+                            responseInput.value = '';
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error handling answer:', error);
+                        this.updateStatus('offline', 'Failed to process answer: ' + error.message);
+                    }
                 } else {
                     console.error('No pending connection found for answer');
+                    this.updateStatus('offline', 'No pending connection found');
                 }
             }
 
-            setupPeerConnection(pc, dataChannel, peerId) {
+            setupPeerConnection(pc, dataChannel, peerId, peerName) {
                 const connectionData = {
                     pc: pc,
                     channel: dataChannel,
-                    peerId: peerId
+                    peerId: peerId,
+                    peerName: peerName
                 };
 
                 pc.oniceconnectionstatechange = () => {
-                    console.log('ICE connection state:', pc.iceConnectionState);
-                    if (pc.iceConnectionState === 'connected') {
-                        this.updateStatus('connected', `Connected with ${peerId}`);
-                        this.connections.set(peerId === 'guest' ? 'pending' : peerId, connectionData);
+                    console.log('ICE connection state:', pc.iceConnectionState, 'for peer:', peerName);
+                    
+                    if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
+                        this.updateStatus('connected', `Connected with ${peerName}`);
+                        
+                        if (peerId === 'pending') {
+                            // Keep as pending until we get the answer with real peer info
+                        } else {
+                            this.connections.set(peerId, connectionData);
+                            this.participants.add(peerName);
+                        }
+                        
                         this.updateParticipants();
                         this.hideConnectionSections();
+                        this.showConnectionAlert();
                         document.getElementById('disconnectBtn').disabled = false;
+                        
                     } else if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed') {
-                        this.handleDisconnection(peerId);
+                        this.handleDisconnection(peerId, peerName);
                     }
                 };
 
                 dataChannel.onopen = () => {
-                    console.log('Data channel opened with', peerId);
+                    console.log('Data channel opened with', peerName);
+                    
                     // Send current document content to new peer
                     if (this.isHost) {
-                        dataChannel.send(JSON.stringify({
+                        const syncMessage = {
                             type: 'sync',
-                            content: document.getElementById('documentEditor').value
-                        }));
+                            content: document.getElementById('documentEditor').innerHTML,
+                            participants: Array.from(this.participants)
+                        };
+                        dataChannel.send(JSON.stringify(syncMessage));
                     }
+                    
+                    // Send join notification
+                    const joinMessage = {
+                        type: 'user_joined',
+                        peerId: this.peerId,
+                        peerName: this.peerName,
+                        participants: Array.from(this.participants)
+                    };
+                    dataChannel.send(JSON.stringify(joinMessage));
                 };
 
                 dataChannel.onmessage = (event) => {
-                    this.handleMessage(JSON.parse(event.data));
+                    try {
+                        const message = JSON.parse(event.data);
+                        this.handleMessage(message);
+                    } catch (error) {
+                        console.error('Error parsing message:', error);
+                    }
                 };
 
                 dataChannel.onerror = (error) => {
                     console.error('Data channel error:', error);
+                };
+
+                dataChannel.onclose = () => {
+                    console.log('Data channel closed with', peerName);
+                    this.handleDisconnection(peerId, peerName);
                 };
             }
 
@@ -471,30 +718,76 @@
                 switch (message.type) {
                     case 'content':
                         if (message.peerId !== this.peerId) {
-                            document.getElementById('documentEditor').value = message.content;
+                            this.onContentUpdate(message.content);
                         }
                         break;
+                        
                     case 'sync':
-                        document.getElementById('documentEditor').value = message.content;
+                        this.onContentUpdate(message.content);
+                        if (message.participants) {
+                            this.participants = new Set(message.participants);
+                            this.updateParticipants();
+                        }
                         break;
-                    case 'cursor':
-                        // Handle cursor position updates
-                        this.updatePeerCursor(message);
+                        
+                    case 'user_joined':
+                        if (message.peerId !== this.peerId) {
+                            this.participants.add(message.peerName);
+                            this.updateParticipants();
+                            this.showUserAlert(`${message.peerName} joined the collaboration`);
+                        }
+                        break;
+                        
+                    case 'user_left':
+                        this.participants.delete(message.peerName);
+                        this.updateParticipants();
+                        this.showUserAlert(`${message.peerName} left the collaboration`);
                         break;
                 }
             }
 
             broadcastChange(change) {
-                this.connections.forEach(connection => {
+                const message = JSON.stringify(change);
+                let sentCount = 0;
+                
+                this.connections.forEach((connection, peerId) => {
                     if (connection.channel && connection.channel.readyState === 'open') {
-                        connection.channel.send(JSON.stringify(change));
+                        try {
+                            connection.channel.send(message);
+                            sentCount++;
+                        } catch (error) {
+                            console.error('Error sending to peer:', peerId, error);
+                        }
                     }
                 });
+                
+                console.log(`Broadcasted change to ${sentCount} peers`);
             }
 
-            updatePeerCursor(cursorData) {
-                // Simple cursor visualization (basic implementation)
-                console.log(`Peer ${cursorData.peerId} cursor at position ${cursorData.start}`);
+            showConnectionAlert() {
+                const alert = document.getElementById('connectionAlert');
+                alert.classList.add('show');
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                }, 3000);
+            }
+
+            showUserAlert(message) {
+                const existingAlert = document.querySelector('.user-alert');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+
+                const alert = document.createElement('div');
+                alert.className = 'connection-alert user-alert show';
+                alert.style.background = '#17a2b8';
+                alert.textContent = message;
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }, 2500);
             }
 
             showCreateSection(token) {
@@ -535,26 +828,64 @@
             }
 
             updateParticipants() {
-                const count = this.connections.size + 1;
-                const participants = document.getElementById('participants');
-                participants.textContent = `Participants: ${count} (You + ${count - 1} others)`;
+                const count = this.participants.size;
+                const countElement = document.getElementById('participantCount');
+                const listElement = document.getElementById('participantsList');
+                
+                countElement.textContent = count;
+                listElement.textContent = Array.from(this.participants).join(', ');
+                
+                if (count > 1) {
+                    document.getElementById('peerInfo').classList.remove('hidden');
+                    document.getElementById('peerList').textContent = Array.from(this.participants).filter(name => name !== this.peerName).join(', ') || 'None';
+                } else {
+                    document.getElementById('peerInfo').classList.add('hidden');
+                }
             }
 
-            handleDisconnection(peerId) {
+            handleDisconnection(peerId, peerName) {
                 this.connections.delete(peerId);
+                this.participants.delete(peerName);
                 this.updateParticipants();
+                
+                // Broadcast user left message
+                const leaveMessage = {
+                    type: 'user_left',
+                    peerId: peerId,
+                    peerName: peerName
+                };
+                this.broadcastChange(leaveMessage);
                 
                 if (this.connections.size === 0) {
                     this.updateStatus('offline', 'All peers disconnected');
                     document.getElementById('disconnectBtn').disabled = true;
+                } else {
+                    this.showUserAlert(`${peerName} disconnected`);
                 }
             }
 
             disconnect() {
+                // Send leave message before closing connections
+                const leaveMessage = {
+                    type: 'user_left',
+                    peerId: this.peerId,
+                    peerName: this.peerName
+                };
+                this.broadcastChange(leaveMessage);
+                
                 this.connections.forEach(connection => {
-                    connection.pc.close();
+                    if (connection.channel) {
+                        connection.channel.close();
+                    }
+                    if (connection.pc) {
+                        connection.pc.close();
+                    }
                 });
+                
                 this.connections.clear();
+                this.participants = new Set([this.peerName]);
+                this.isHost = false;
+                
                 this.updateStatus('offline', 'Disconnected');
                 this.hideConnectionSections();
                 this.updateParticipants();
@@ -564,6 +895,24 @@
 
         // Global instance
         const editor = new CollaborativeEditor();
+
+        // Rich Text Formatting Functions
+        function formatDoc(command, value) {
+            document.execCommand(command, false, value);
+            document.getElementById('documentEditor').focus();
+            
+            // Broadcast formatting change
+            setTimeout(() => {
+                const change = {
+                    type: 'content',
+                    content: document.getElementById('documentEditor').innerHTML,
+                    timestamp: Date.now(),
+                    peerId: editor.peerId,
+                    peerName: editor.peerName
+                };
+                editor.broadcastChange(change);
+            }, 10);
+        }
 
         // Global functions for UI
         function createRoom() {
@@ -591,6 +940,8 @@
             const token = document.getElementById('tokenDisplay').textContent;
             navigator.clipboard.writeText(token).then(() => {
                 alert('Token copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy token. Please copy manually.');
             });
         }
 
@@ -619,6 +970,8 @@
         function copyResponseToken() {
             navigator.clipboard.writeText(window.currentResponseToken).then(() => {
                 alert('Response token copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy token. Please copy manually.');
             });
         }
 
@@ -671,15 +1024,66 @@
                 if (token.type === 'answer') {
                     editor.handleAnswer(token);
                     editor.updateStatus('connecting', 'Processing connection response...');
-                    document.getElementById('responseTokenInput').value = '';
                 } else {
                     alert('Invalid response token format');
                 }
             } catch (error) {
-                alert('Invalid token format');
+                alert('Invalid token format: ' + error.message);
                 console.error('Response token error:', error);
             }
         }
+
+        // Placeholder functionality
+        document.getElementById('documentEditor').addEventListener('focus', function() {
+            if (this.innerHTML === '' || this.innerHTML === '<br>') {
+                this.innerHTML = '';
+            }
+        });
+
+        document.getElementById('documentEditor').addEventListener('blur', function() {
+            if (this.innerHTML === '' || this.innerHTML === '<br>') {
+                this.innerHTML = '';
+            }
+        });
+
+        // Prevent default formatting on paste and clean it
+        document.getElementById('documentEditor').addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = e.clipboardData.getData('text/plain');
+            document.execCommand('insertText', false, text);
+            
+            // Broadcast the change
+            setTimeout(() => {
+                const change = {
+                    type: 'content',
+                    content: this.innerHTML,
+                    timestamp: Date.now(),
+                    peerId: editor.peerId,
+                    peerName: editor.peerName
+                };
+                editor.broadcastChange(change);
+            }, 10);
+        });
+
+        // Handle keyboard shortcuts for formatting
+        document.getElementById('documentEditor').addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        formatDoc('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        formatDoc('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        formatDoc('underline');
+                        break;
+                }
+            }
+        });
     </script>
 </body>
 </html>
